@@ -25,7 +25,7 @@ public interface TaskMonthlyResultRepository extends JpaRepository<TaskMonthlyRe
 	@Query("select t from TaskMonthlyResult t where t.employee_id = :employeeId  ORDER BY t.result_date DESC")
 	Page<TaskMonthlyResult> findByEmployeeId(String employeeId, Pageable pageable);
 
-	@Query("select t from TaskMonthlyResult t where t.employee_id = :employeeId and result_date > DATEADD(MONTH, -12, GETDATE()) ORDER BY t.result_date DESC")
+	@Query("select t from TaskMonthlyResult t where t.employee_id = :employeeId and result_date > DATEADD(MONTH, -13, GETDATE()) ORDER BY t.result_date DESC")
 	List<TaskMonthlyResult> getYearByEmployeeId(String employeeId);
 
 	@Query("select t from TaskMonthlyResult t where t.employee_id = :employeeId and result_date BETWEEN :yStart and :yEnd ORDER BY t.result_date DESC")

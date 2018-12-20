@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
-<head>
-  	<div th:include="include/head"></div>
+<head th:include="include/head">
 </head>
 <head>
 <title>マイページ</title>
@@ -14,35 +13,62 @@
 </script>
 </head>
 <body>
-  <div th:include="include/header"></div>
-  <div class="container col-md-8 col-md-offset-2">
-	<div class="panel panel-default">
-	  <h3>ポイント獲得実績</h3>
-	  <form id="form">
-		<select id="year" name="year">
-		  <option value="">直近12ヶ月</option>
-		  <option th:each="year:${yearList}"th:value="*{year}" th:text="*{year}+年度"></option>
-		</select>
-		
-	  </form>
-	  <div class="container col-md-2 col-md-offset-1 bg-success">
-	  	<p th:text="${#aggregates.sum(taskYearResult.![result_point])}"></p>
+  <div th:include="include/header">
+  </div>
+  <div class="container">
+	<form id="form">
+	  <select class="form-control" id="year" name="year" th:value="${year}">
+		<option value="">直近12ヶ月</option>
+		<option th:each="y:${yearList}" th:value="*{y}" th:text="*{y}+年度" th:selected="${y == year}"></option>
+	  </select>
+	</form>
+	<div class="panel panel-primary">
+	 <div class="panel-heading" th:text="ポイント獲得実績">
 	  </div>
-	  <div class="container col-md-2 bg-info">
-	  	<p th:if="${#lists.size(taskYearResult)} ==12" th:text="${100 * #aggregates.sum(taskYearResult.![result_point]) / #aggregates.sum(taskYearResult.![norma])}"></p>
-	  	<p th:if="${#lists.size(taskYearResult)} !=12" th:text="${100 * #aggregates.sum(taskYearResult.![result_point]) / (#aggregates.sum(taskYearResult.![norma]) + ((12 -#lists.size(taskYearResult))* employee.employmentInfo.norma))}"></p>
+	  <div class="panel-body">
+	    <th:block th:if="${#lists.size(taskYearResult)} != 0">
+		<div class="col-md-3">
+		  <div class="panel panel-success">
+		  	<div class="panel-heading">
+		  	  <p class="text-center panel-title">獲得ポイント</p>
+		  	  <p class="text-center" th:text="${#numbers.formatInteger(#aggregates.sum(taskYearResult.![result_point]), 1,'COMMA')}"></p>
+		  	</div>
+		  </div>
+		</div>
+		<div class="col-md-3">
+		  <div class="panel panel-info">
+		  	<div class="panel-heading" th:unless="${yearFlg}">
+		  	  <p class="text-center panel-title">ノルマ達成率</p>
+			  <p class="text-center" th:text="|${100 * #aggregates.sum(taskYearResult.![result_point]) / #aggregates.sum(taskYearResult.![norma])}%|"></p>
+			</div>
+			<div class="panel-heading" th:if="${yearFlg}">
+		  	  <p class="text-center panel-title">ノルマ達成率</p>
+			  <p class="text-center" th:text="|${100 * #aggregates.sum(taskYearResult.![result_point]) / (#aggregates.sum(taskYearResult.![norma]) + ((12 -#lists.size(taskYearResult))* employee.employmentInfo.norma))}%|"></p>
+		  	</div>
+		  </div>
+		</div>
+		<div class="col-md-3">
+		  <div class="panel panel-success">
+		  	<div class="panel-heading">
+		  	  <p class="text-center panel-title">部署内ランキング</p>
+		  	</div>
+		  </div>
+		</div>
+		<div class="col-md-3">
+		  <div class="panel panel-success">
+		  	<div class="panel-heading">
+		  	  <p class="text-center panel-title">社内ランキング</p>
+		  	</div>
+		  </div>
+		</div>
+		</th:block>
 	  </div>
-	  <div class="container col-md-2">
-		<p th:text="${#lists.size(taskYearResult)}"></p>
+	</div>
+	<div class="panel panel-primary">
+	  <div class="panel-heading" th:text="ポイント獲得履歴">
 	  </div>
-	  <div class="container col-md-2">
-		aaa
-	  </div>
-	  <div class="container col-md-2">
-		aaa
-	  </div>
-	  <div class="container col-md-12">
-		<table class="table">
+	  <div class="panel-body">
+		<table class="table table-striped">
 		  <thead>
 			<tr>
 			  <th>年月</th>
@@ -53,16 +79,18 @@
 			  <th>社内ランキング</th>
 			</tr>
 		  </thead>
+	    <th:block th:if="${#lists.size(taskYearResult)} != 0">
 		  <tbody>
 			<tr th:each="TaskMonthlyResult:${taskYearResult}" th:object="${TaskMonthlyResult}">
 			  <td th:text="*{#temporals.format(result_date,'yyyy年MM月')}"></td>
-			  <td th:text="*{result_point}"></td>
-			  <td th:text="*{norma}"></td>
-			  <td th:text="*{(100* result_point / norma)}"></td>
-			  <td></td>
+			  <td th:text="|*{#numbers.formatInteger(result_point, 1,'COMMA')} ポイント|"></td>
+			  <td th:text="|*{#numbers.formatInteger(norma, 1,'COMMA')} ポイント|"></td>
+			  <td th:text="|*{(100* result_point / norma)} %|"></td>
+			  <td th:text="*{department_id}"></td>
 			  <td></td>
 			</tr>
 		  </tbody>
+		  </th:block>
 		</table>
 	  </div>
 	</div>

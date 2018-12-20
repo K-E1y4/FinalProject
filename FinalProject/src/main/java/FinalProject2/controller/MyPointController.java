@@ -1,5 +1,7 @@
 package FinalProject2.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,8 +50,20 @@ public class MyPointController {
     	MyPageMonthlyList mypageML = mypageMLService.getById(user);
     	List<String> yearList = employeeService.getYearList(user.getUsername());
     	Employee employee = employeeService.findOne(user.getUsername()).get();
+    	//拾ってくるデータが今年度のものかどうかの判定
+    	boolean yearFlg = false;
+    	if(!(taskYearResult.isEmpty() || year.equals(""))){
+    		LocalDate resultDate = taskYearResult.get(0).getResult_date();
+    		LocalDate yStart = LocalDate.parse(yearList.get(0) + "-04-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    		LocalDate yEnd = LocalDate.parse(Integer.toString(Integer.parseInt(yearList.get(0))+1) + "-03-31", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    		if(resultDate.isAfter(yStart) && resultDate.isBefore(yEnd)) {
+    			yearFlg = true;
+    		}
+    	}
 		model.addAttribute("taskYearResult", taskYearResult);
     	model.addAttribute("mypageML", mypageML);
+    	model.addAttribute("year", year);
+    	model.addAttribute("yearFlg", yearFlg);
     	model.addAttribute("yearList", yearList);
     	model.addAttribute("employee", employee);
 		return "mypage/point";

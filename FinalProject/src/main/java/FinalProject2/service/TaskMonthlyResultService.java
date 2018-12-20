@@ -21,7 +21,7 @@ public class TaskMonthlyResultService{
 	@Autowired
 	TaskMonthlyResultRepository taskMRR;
 
-	private final int pageSize = 1;
+	private final int pageSize = 3;
 	
 	public List<TaskMonthlyResult> findAll() {
 	    return taskMRR.findAll();

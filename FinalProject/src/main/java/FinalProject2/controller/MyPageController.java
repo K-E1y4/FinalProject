@@ -46,8 +46,10 @@ public class MyPageController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	UserAccount user = UserAccount.class.cast(authentication.getPrincipal());
     	session.setAttribute("user", user);
-    	List<TaskManagement> taskMList = taskMService.findUserMonthly(user);
-    	model.addAttribute("taskMList", taskMList);
+		List<TaskManagement> taskNormalList = taskMService.findNormalByEmployeeId(user.getUsername());
+		List<TaskManagement> taskExpiredList = taskMService.findExpiredByEmployeeId(user.getUsername());
+		model.addAttribute("taskNormalList", taskNormalList);
+		model.addAttribute("taskExpiredList", taskExpiredList);
     	MyPageMonthlyList mypageML = mypageMLService.getById(user);
     	model.addAttribute("mypageML", mypageML);
 		int getpoint = taskMRService.getSumBonusPoint(user.getUsername());
