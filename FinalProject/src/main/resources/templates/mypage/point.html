@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+<head>
+  	<div th:include="include/head"></div>
+</head>
+<head>
+<title>マイページ</title>
+<script>
+	$(function(){
+		$('#year').change(function(){
+			$('#form').submit();
+		});
+	});
+</script>
+</head>
+<body>
+  <div th:include="include/header"></div>
+  <div class="container col-md-8 col-md-offset-2">
+	<div class="panel panel-default">
+	  <h3>ポイント獲得実績</h3>
+	  <form id="form">
+		<select id="year" name="year">
+		  <option value="">直近12ヶ月</option>
+		  <option th:each="year:${yearList}"th:value="*{year}" th:text="*{year}+年度"></option>
+		</select>
+		
+	  </form>
+	  <div class="container col-md-2 col-md-offset-1 bg-success">
+	  	<p th:text="${#aggregates.sum(taskYearResult.![result_point])}"></p>
+	  </div>
+	  <div class="container col-md-2 bg-info">
+	  	<p th:if="${#lists.size(taskYearResult)} ==12" th:text="${100 * #aggregates.sum(taskYearResult.![result_point]) / #aggregates.sum(taskYearResult.![norma])}"></p>
+	  	<p th:if="${#lists.size(taskYearResult)} !=12" th:text="${100 * #aggregates.sum(taskYearResult.![result_point]) / (#aggregates.sum(taskYearResult.![norma]) + ((12 -#lists.size(taskYearResult))* employee.employmentInfo.norma))}"></p>
+	  </div>
+	  <div class="container col-md-2">
+		<p th:text="${#lists.size(taskYearResult)}"></p>
+	  </div>
+	  <div class="container col-md-2">
+		aaa
+	  </div>
+	  <div class="container col-md-2">
+		aaa
+	  </div>
+	  <div class="container col-md-12">
+		<table class="table">
+		  <thead>
+			<tr>
+			  <th>年月</th>
+			  <th>実績</th>
+			  <th>ノルマ</th>
+			  <th>達成率</th>
+			  <th>部署内ランキング</th>
+			  <th>社内ランキング</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr th:each="TaskMonthlyResult:${taskYearResult}" th:object="${TaskMonthlyResult}">
+			  <td th:text="*{#temporals.format(result_date,'yyyy年MM月')}"></td>
+			  <td th:text="*{result_point}"></td>
+			  <td th:text="*{norma}"></td>
+			  <td th:text="*{(100* result_point / norma)}"></td>
+			  <td></td>
+			  <td></td>
+			</tr>
+		  </tbody>
+		</table>
+	  </div>
+	</div>
+  </div>
+</body>
+</html>

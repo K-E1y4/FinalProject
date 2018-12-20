@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+<head>
+  	<div th:include="include/head"></div>
+</head>
+<head>
+<title>マイページ</title>
+</head>
+<body>
+  <div th:include="include/header"></div>
+  <div class="container col-md-8 col-md-offset-2">
+	<div class="panel panel-default">
+	  <div class="container col-md-12">
+		<table class="table">
+		  <thead>
+			<tr>
+			  <th>No.</th>
+			  <th>タスク名</th>
+			  <th>責任者</th>
+			  <th>納期</th>
+			  <th></th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr th:each="TaskManagement:${taskMList}" th:object="${TaskManagement}">
+			  <td></td>
+			  <td th:text="*{taskDetail.task_detail_name}"></td>
+			  <td th:text="*{taskDetail.task.employee.employee_name}"></td>
+			  <td th:text="*{#temporals.format(due_date,'yyyy年MM月dd日')}"></td>
+			  <td></td>
+			</tr>
+		  </tbody>
+		</table>
+	  </div>
+	  <div class="container col-md-7">
+		<table class="table" th:object="${mypageML}">
+		  <tr>
+		  	<th>現在のポイント状況</th>
+		  	<td th:text="|*{getPoint} ポイント|"></td>
+		  </tr>
+		  <tr>
+		  	<th>今月のノルマ</th>
+		  	<td th:text="|*{norma} ポイント|"></td>
+		  </tr>
+		  <tr>
+		  	<th>達成度</th>
+		  	<td th:text="|*{100 * getPoint / norma}%|"></td>
+		  </tr>
+		  <tr>
+		  	<th>今月獲得見込みポイント</th>
+		  	<td th:text="|*{willGetPoint} ポイント|"></td>
+		  </tr>
+		  <tr>
+		  	<th>部署内ランキング</th>
+		  	<td></td>
+		  </tr>
+		  <tr>
+		  	<th>社内ランキング</th>
+		  	<td></td>
+		  </tr>
+		</table>
+	  </div>
+	  <div class="container col-md-5">
+		<div class="panel panel-success">
+	  	  <div class="panel-heading">
+			<h2 class="panel-title">現在の利用可能ポイント</h2>
+	  	  </div>
+	  	  <div class="panel-body">
+	    	<p class="text-center" th:text="${point}+ポイント"></p>
+	    	<a class="center-block btn btn-success" href="/FinalProject2/mypointchange">ポイント交換</a>
+	    	<a class="center-block btn btn-success" href="/FinalProject2/mybonuspoint">ポイント履歴</a>
+	  	  </div>
+		</div>
+  	  </div>
+	</div>
+  </div>
+
+</body>
+</html>

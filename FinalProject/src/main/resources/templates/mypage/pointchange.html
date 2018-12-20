@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<div th:include="include/head"></div>
+</head>
+<head>
+<title>ポイント交換</title>
+  <script>
+	function sub() {
+		document.formdayo.submit();
+	}
+  </script>
+  <script>
+	$(function() {
+		$('#canselSub').click(function() {
+			var flg = "0";
+			$('#form').submit( function( e ) {
+				$("#keihi_name").html($("#cost_name").val());
+				$("#keihi_kubun").html($("#cost_division_id option:selected").text());
+				$("#keihi_money").html($("#bonus_point_use").val());
+				$("#keihi_detail").html($("#detail").val());
+		    	$.magnificPopup.open({
+		    		  items: {
+		    		    src: '#popup'
+		    		  },
+		    		  type: 'inline'
+		    		});
+	        	return false;
+	    	} );
+		});
+	} );
+  </script>
+</head>
+<body>
+ 	<div th:include="include/header">
+ 	</div>
+ 	<div class="container col-md-8 col-md-offset-2">
+  	  <div class="panel panel-primary">
+	    <div class="panel-heading">
+	 	  <h2 class="panel-title">ポイント交換申請フォーム</h2>
+	    </div>
+	    <div class="panel-body">
+		  <div class="col-xs-4 col-xs-offset-1 pull-right">
+			<div class="panel panel-success">
+ 		  	  <div class="panel-heading">
+ 				<h2 class="panel-title">現在の利用可能ポイント</h2>
+ 		  	  </div>
+			  <div class="panel-body">
+ 		    	<p class="text-center" th:text="${point}+ポイント"></p>
+ 		  	  </div>
+ 			</div>
+ 	  	  </div>
+		  <form th:method="post" th:action="@{mypointchange}" th:object="${BonusPointUseForm}" id="form" name="formdayo">
+		    <div class="form-group col-xs-7">
+			  <label>経費名</label>
+ 	  		  <input class="form-control" type="text" name="cost_name" id="cost_name" required></input>
+ 		  	</div>
+		  	<div class="form-group col-xs-7">
+	 		  <label>経費区分</label>
+	 	  	  <select class="form-control" name="cost_division_id" id="cost_division_id">
+				<option th:each="costDivision:${costDivision}" th:value="${costDivision.cost_division_id}" th:text="${costDivision.cost_division_name}">
+			  </select>
+		  	</div>
+		  	<div class="form-group col-xs-7">
+ 	  		  <label>金額</label>
+	 	  	  <input class="form-control" name="bonus_point_use" min="1" th:max="${point}" step="1" id="bonus_point_use" type="number" required>
+		  	</div>
+		  	<div class="form-group col-xs-12">
+			  <label>備考</label>
+			  <textarea class="form-control" style="height:150px" name="detail" id="detail" required> </textarea>
+		  	</div>
+		    <div class="col-md-4 col-md-offset-4">
+		    	    <button class="btn btn-primary col-md-12 center-block" id="canselSub">送信</button>
+		  	</div>
+		  	  <div id="popup" class="mfp-hide col-md-6 col-md-offset-3">
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+		<b class="panel-title">ポイント交換</b>
+	  </div>
+	  <div class="panel-body">
+	  	<p>以下の内容で登録します。よろしいですか？</p>
+	  	<table class="table">
+	  	  <tbody>
+	  	  	<tr>
+	  	  	  <td>経費名</td>
+	  	  	  <td colspan="3" id="keihi_name"></td>
+	  	  	</tr>
+	  	  	<tr>
+	  	  	  <td>経費区分</td>
+	  	  	  <td colspan="3" id="keihi_kubun"></td>
+	  	  	</tr>
+	  	  	<tr>
+	  	  	  <td>金額</td>
+	  	  	  <td colspan="3" id="keihi_money"></td>
+	  	  	</tr>
+	  	  	<tr>
+	  	  	  <td>備考</td>
+	  	  	  <td colspan="3" id="keihi_detail"></td>
+	  	  	</tr>
+	  	  </tbody>
+	  	</table>
+		    <div class="col-md-4 col-md-offset-4">
+	    <button class="btn btn-primary col-md-12 center-block" onclick="sub()">送信</button>
+	    </div>
+	  </div>
+	</div>
+  </div>
+	 	  </form>
+ 	    </div>
+ 	  </div> 	
+	</div>
+  </body>
+</html>

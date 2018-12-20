@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include/head">
+</head>
+<head>
+<title>その他マスタ一覧</title>
+</head>
+	<body>
+	 		<div th:include="include/header"></div>
+			<div class="container" >
+					<div class="panel panel-primary" style="width: 55rem; float:left; height: 75rem;">
+							<div class="panel-heading">部署マスタ一覧</div>
+							<div class="panel-body">
+									<a id="department_new_btn" class="btn btn-primary btn-sm pull-right" style="margin: 5px;">新規作成</a>
+									<table class="table table-hover table-sm table-bordered">
+				        					<thead>
+				          							<tr>
+												            <th class="col-md-1">ID</th>
+												            <th class="col-md-8">部署名</th>
+												            <th class="col-md-1"></th>
+				          							</tr>
+				        					</thead>
+				        					<tbody>
+				          							<tr th:each="department:${session.departments}" >
+															<td th:text="${department.department_id}"></td>
+														    <td>
+														    		<form th:action="@{/master/others/department/{department_id}(department_id=${department.department_id})}"  th:method="post"  th:object="${new_department}">
+														    				<input type="text" class="form-control input-normal"  name="department_name" id="department_name"  th:value="${department.department_name}" style="width: 35rem; float: left;">
+														    				<button class="btn btn-primary btn-xs pull-right" type="submit" style="float: right;">更新</button>
+														    		</form>
+														    </td>
+						            						<td>
+														            <a class="department_delete btn btn-danger btn-xs" th:href="@{/master/others/department/{department_id}/delete(department_id=${department.department_id})}">削除</a>
+						            						</td>
+				          							 </tr>
+				        					</tbody>
+				      				</table>
+				      				<form th:action="@{/master/others/department/pagenate}" th:object="${session.departments_page}" method="get">
+						    				<div class="float-right">
+						      						<div th:fragment='paginationbar' style="float: right;">
+						        							<ul class="pagination">
+						          									<li class="page-item" th:each='i : ${#numbers.sequence(0, session.departments_page.totalPages-1)}'>
+						            										<span th:if='${i}==${session.departments_page.number}' th:text='${i+1}'>1</span>
+						            										<a th:if='${i}!=${session.departments_page.number}' th:href="@{/master/others/department/page={page}(page=${i})}" class="page-link">
+						                											<span th:text='${i+1}'>1</span>
+						            										</a>
+						          									</li>
+						        							</ul>
+						       						</div>
+						     				</div>
+				   					</form>
+							</div>
+					</div>
+					<div class="panel panel-primary" style="width: 55rem; float: right; height: 75rem;">
+							<div class="panel-heading">役職マスタ一覧</div>
+							<div class="panel-body">
+									<a id="position_new_btn" class="btn btn-primary btn-sm pull-right" style="margin: 5px;">新規作成</a>
+									<table class="table table-hover table-sm table-bordered">
+				        					<thead>
+				          							<tr>
+												            <th class="col-md-1">ID</th>
+												            <th class="col-md-5">役職名</th>
+												            <th class="col-md-3">ボーナスレート</th>
+												            <th class="col-md-1"></th>
+				          							</tr>
+				        					</thead>
+				        					<tbody>
+				          							<tr th:each="position:${session.positions}">
+															<td th:text="${position.position_id}"></td>
+														    <td colspan="2">
+														    		<form th:action="@{/master/others/position/{position_id}(position_id=${position.position_id})}"  th:method="post"  th:object="${new_position}">
+														    				<input type="text" class="form-control input-normal"  name="position_name" id="position_name"  th:value="${position.position_name}" style="width: 24rem; float: left;">
+														    				<input type="number"  step="0.1" class="form-control input-normal"  name="bonus_rate" id="bonus_rate"  th:value="${position.bonus_rate}" style="width: 9rem; float: left; margin-left: 2rem;">
+														    				<button class="btn btn-primary btn-xs pull-right" type="submit" style="float: right;">更新</button>
+														    		</form>
+														    </td>
+						            						<td>        
+														            <a class="position_delete btn btn-danger btn-xs" th:href="@{/master/others/position/{position_id}/delete(position_id=${position.position_id})}">削除</a>
+						            						</td>
+				          							 </tr>
+				        					</tbody>
+		        					</table>
+		        					<form th:action="@{/master/others/position/pagenate}" th:object="${session.positions_page}" method="get">
+				        					<div class="float-right">
+						      						<div th:fragment='paginationbar' style="float: right;">
+						        							<ul class="pagination">
+						          									<li class="page-item" th:each='i : ${#numbers.sequence(0, session.positions_page.totalPages-1)}'>
+						            										<span th:if='${i}==${session.positions_page.number}' th:text='${i+1}'>1</span>
+						            										<a th:if='${i}!=${session.positions_page.number}' th:href="@{/master/others/position/page={page}(page=${i})}" class="page-link">
+						                											<span th:text='${i+1}'>1</span>
+						            										</a>
+						          									</li>
+						        							</ul>
+						       						</div>
+						     				</div>
+				     				</form>
+							</div>
+					</div>
+					<div class="panel panel-primary" style="width: 55rem; float: left; height: 75rem;">
+							<div class="panel-heading">タスク種別マスタ一覧</div>
+							<div class="panel-body">
+									<a  id="task_division_new_btn" class="btn btn-primary btn-sm pull-right" style="margin: 5px;">新規作成</a>
+									<table class="table table-hover table-sm table-bordered">
+				        					<thead>
+				          							<tr>
+												            <th class="col-md-1">ID</th>
+												            <th class="col-md-8">タスク種別名</th>
+												            <th class="col-md-1"></th>
+				          							</tr>
+				        					</thead>
+				        					<tbody>
+				          							<tr th:each="taskDivision:${session.taskDivisions}">
+															<td th:text="${taskDivision.task_division_id}"></td>
+														    <td>
+														    		<form th:action="@{/master/others/taskDivision/{task_division_id}(task_division_id=${taskDivision.task_division_id})}"  th:method="post"  th:object="${new_taskDivision}">
+														    				<input type="text" class="form-control input-normal"  name="task_division_name" id="task_division_name"  th:value="${taskDivision.task_division_name}" style="width: 35rem; float: left;">
+														    				<button class="btn btn-primary btn-xs pull-right" type="submit" style="float: right;">更新</button>
+														    		</form>
+														    </td>
+						            						<td>
+														            <a class="taskDivision_delete btn btn-danger btn-xs" th:href="@{/master/others/taskDivision/{task_division_id}/delete(task_division_id=${taskDivision.task_division_id})}">削除</a>
+						            						</td>
+				          							 </tr>
+				        					</tbody>
+				      				</table>
+				      				<form th:action="@{/master/others/taskDivision/pagenate}" th:object="${session.taskDivisions_page}" method="get">
+				        					<div class="float-right">
+						      						<div th:fragment='paginationbar' style="float: right;">
+						        							<ul class="pagination">
+						          									<li class="page-item" th:each='i : ${#numbers.sequence(0, session.taskDivisions_page.totalPages-1)}'>
+						            										<span th:if='${i}==${session.taskDivisions_page.number}' th:text='${i+1}'>1</span>
+						            										<a th:if='${i}!=${session.taskDivisions_page.number}' th:href="@{/master/others/taskDivision/page={page}(page=${i})}" class="page-link">
+						                											<span th:text='${i+1}'>1</span>
+						            										</a>
+						          									</li>
+						        							</ul>
+						       						</div>
+						     				</div>
+				     				</form>
+							</div>
+					</div>
+					<div class="panel panel-primary" style="width: 55rem; float: right; height: 75rem;">
+							<div class="panel-heading">経費種別マスタ一覧</div>
+							<div class="panel-body">
+									<a id="cost_division_new_btn" class="btn btn-primary btn-sm pull-right" style="margin: 5px;">新規作成</a>
+									<table class="table table-hover table-sm table-bordered">
+				        					<thead>
+				          							<tr>
+												            <th class="col-md-1">ID</th>
+												            <th class="col-md-8">経費種別名</th>
+												            <th class="col-md-1"></th>
+				          							</tr>
+				        					</thead>
+				        					<tbody>
+				          							<tr th:each="costDivision:${session.costDivisions}">
+															<td th:text="${costDivision.cost_division_id}"></td>
+														    <td>
+														    		<form th:action="@{/master/others/costDivision/{cost_division_id}(cost_division_id=${costDivision.cost_division_id})}"  th:method="post"  th:object="${new_costDivision}">
+														    				<input type="text" class="form-control input-normal"  name="cost_division_name" id="cost_division_name"  th:value="${costDivision.cost_division_name}" style="width: 35rem; float: left;">
+														    				<button class="btn btn-primary btn-xs pull-right" type="submit" style="float: right;">更新</button>
+														    		</form>
+														    </td>
+						            						<td>        
+														            <a class="costDivision_delete btn btn-danger btn-xs" th:href="@{/master/others/costDivision/{cost_division_id}/delete(cost_division_id=${costDivision.cost_division_id})}">削除</a>
+						            						</td>
+				          							 </tr>
+				        					</tbody>
+		        					</table>
+		        					<form th:action="@{/master/others/costDivision/pagenate}" th:object="${session.costDivisions_page}" method="get">
+				        					<div class="float-right">
+						      						<div th:fragment='paginationbar' style="float: right; height: 75rem;">
+						        							<ul class="pagination">
+						          									<li class="page-item" th:each='i : ${#numbers.sequence(0, session.costDivisions_page.totalPages-1)}'>
+						            										<span th:if='${i}==${session.costDivisions_page.number}' th:text='${i+1}'>1</span>
+						            										<a th:if='${i}!=${session.costDivisions_page.number}' th:href="@{/master/others/costDivision/page={page}(page=${i})}" class="page-link">
+						                											<span th:text='${i+1}'>1</span>
+						            										</a>
+						          									</li>
+						        							</ul>
+						       						</div>
+						     				</div>
+				     				</form>
+							</div>
+					</div>
+					<div class="panel panel-primary" style="width: 55rem; float: left; height: 75rem;">
+							<div class="panel-heading">休暇種別マスタ一覧</div>
+							<div class="panel-body">
+									<a  id="dayoff_division_new_btn"  class="btn btn-primary btn-sm pull-right" style="margin: 5px;">新規作成</a>
+									<table class="table table-hover table-sm table-bordered">
+				        					<thead>
+				          							<tr>
+												            <th class="col-md-1">ID</th>
+												            <th class="col-md-8">休暇種別名</th>
+												            <th class="col-md-1"></th>
+				          							</tr>
+				        					</thead>
+				        					<tbody>
+				          							<tr th:each="dayoffDivision:${session.dayoffDivisions}">
+															<td th:text="${dayoffDivision.dayoff_division_id}"></td>
+														    <td>
+														    		<form th:action="@{/master/others/dayoffDivision/{dayoff_division_id}(dayoff_division_id=${dayoffDivision.dayoff_division_id})}"  th:method="post"  th:object="${new_dayoffDivision}">
+														    				<input type="text" class="form-control input-normal"  name="dayoff_division_name" id="dayoff_division_name"  th:value="${dayoffDivision.dayoff_division_name}" style="width: 35rem; float: left;">
+														    				<button class="btn btn-primary btn-xs pull-right" type="submit" style="float: right;">更新</button>
+														    		</form>
+														    </td>
+						            						<td>        
+														            <a class="dayoffDivision_delete btn btn-danger btn-xs" th:href="@{/master/others/dayoffDivision/{dayoff_division_id}/delete(dayoff_division_id=${dayoffDivision.dayoff_division_id})}">削除</a>
+						            						</td>
+				          							 </tr>
+				        					</tbody>
+		        					</table>
+		        					<form th:action="@{/master/others/dayOffDivision/pagenate}" th:object="${session.dayOffDivisions_page}" method="get">
+				        					<div class="float-right">
+						      						<div th:fragment='paginationbar' style="float: right; height: 75rem;">
+						        							<ul class="pagination">
+						          									<li class="page-item" th:each='i : ${#numbers.sequence(0, session.dayOffDivisions_page.totalPages-1)}'>
+						            										<span th:if='${i}==${session.dayOffDivisions_page.number}' th:text='${i+1}'>1</span>
+						            										<a th:if='${i}!=${session.dayOffDivisions_page.number}' th:href="@{/master/others/dayOffDivision/page={page}(page=${i})}" class="page-link">
+						                											<span th:text='${i+1}'>1</span>
+						            										</a>
+						          									</li>
+						        							</ul>
+						       						</div>
+						     				</div>
+				     				</form>
+							</div>
+					</div>
+					<div id="department_pop" class="mfp-hide col-md-6 col-md-offset-3">
+							<div class="panel panel-default">
+	  								<div class="panel-heading">
+											<b class="panel-title">部署マスター新規登録フォーム</b>
+	  								</div>
+	  								<div class="panel-body">
+											<form th:action="@{/master/others/department/new}" th:object="${new_department}" method="post">
+		  											<div class="form-group">
+															<label>部署ID</label>
+															<input id="department_id_pop"  th:value="${session.department_id_new}" class="form-control" name="department_id"  readonly>
+		  											</div>
+		  											<div class="form-group">
+															<label>部署名</label>
+															<input id="department_name_pop" class="form-control" name="department_name"  required>
+		  											</div>
+		  											<button class="btn btn-primary" id="department_pop_btn">登録</button>
+											</form>
+	  								</div>
+							</div>
+  					</div>
+  					<div id="position_pop" class="mfp-hide col-md-6 col-md-offset-3">
+							<div class="panel panel-default">
+	  								<div class="panel-heading">
+											<b class="panel-title">役職マスター新規登録フォーム</b>
+	  								</div>
+	  								<div class="panel-body">
+											<form th:action="@{/master/others/position/new}" th:object="${new_position}" method="post">
+		  											<div class="form-group">
+															<label>役職ID</label>
+															<input id="position_id_pop"  th:value="${session.position_id_new}" class="form-control" name="position_id"  readonly>
+		  											</div>
+		  											<div class="form-group">
+															<label>役職名</label>
+															<input id="position_name_pop" class="form-control" name="position_name"  required>
+		  											</div>
+		  											<div class="form-group">
+															<label>ボーナスレート</label>
+															<input type="number" step="0.1" id="bonus_rate_pop" class="form-control" name="bonus_rate" required>
+		  											</div>
+		  											<button class="btn btn-primary" id="position_pop_btn">登録</button>
+											</form>
+	  								</div>
+							</div>
+  					</div>
+  					<div id="task_division_pop" class="mfp-hide col-md-6 col-md-offset-3">
+							<div class="panel panel-default">
+	  								<div class="panel-heading">
+											<b class="panel-title">タスク種別マスター新規登録フォーム</b>
+	  								</div>
+	  								<div class="panel-body">
+											<form th:action="@{/master/others/taskDivision/new}" th:object="${new_taskDivision}" method="post">
+		  											<div class="form-group">
+															<label>タスク種別ID</label>
+															<input id="task_division_id_pop"  th:value="${session.task_division_id_new}" class="form-control" name="taskDivision_id"  readonly>
+		  											</div>
+		  											<div class="form-group">
+															<label>タスク種別名</label>
+															<input id="task_division_name_pop" class="form-control" name="task_division_name"  required>
+		  											</div>
+		  											<button class="btn btn-primary" id="task_division_pop_btn">登録</button>
+											</form>
+	  								</div>
+							</div>
+  					</div>
+  					<div id="cost_division_pop" class="mfp-hide col-md-6 col-md-offset-3">
+							<div class="panel panel-default">
+	  								<div class="panel-heading">
+											<b class="panel-title">経費種別マスター新規登録フォーム</b>
+	  								</div>
+	  								<div class="panel-body">
+											<form th:action="@{/master/others/costDivision/new}" th:object="${new_costDivision}" method="post">
+		  											<div class="form-group">
+															<label>経費種別ID</label>
+															<input id="cost_division_id_pop"  th:value="${session.cost_division_id_new}" class="form-control" name="costDivision_id"  readonly>
+		  											</div>
+		  											<div class="form-group">
+															<label>経費種別名</label>
+															<input id="cost_division_name_pop" class="form-control" name="cost_division_name"  required>
+		  											</div>
+		  											<button class="btn btn-primary" id="task_division_pop_btn">登録</button>
+											</form>
+	  								</div>
+							</div>
+  					</div>
+  					<div id="dayoff_division_pop" class="mfp-hide col-md-6 col-md-offset-3">
+							<div class="panel panel-default">
+	  								<div class="panel-heading">
+											<b class="panel-title">休暇種別マスター新規登録フォーム</b>
+	  								</div>
+	  								<div class="panel-body">
+											<form th:action="@{/master/others/dayoffDivision/new}" th:object="${new_dayoffDivision}" method="post">
+		  											<div class="form-group">
+															<label>休暇種別ID</label>
+															<input id="dayoff_division_id_pop"  th:value="${session.dayoff_division_id_new}" class="form-control" name="dayoffDivision_id"  readonly>
+		  											</div>
+		  											<div class="form-group">
+															<label>休暇種別名</label>
+															<input id="dayoff_division_name_pop" class="form-control" name="dayoff_division_name"  required>
+		  											</div>
+		  											<button class="btn btn-primary" id="dayoff_division_pop_btn">登録</button>
+											</form>
+	  								</div>
+							</div>
+  					</div>
+			</div>
+			<script>
+					$(function(){
+							/***************************************************
+							 * NEW POPUP
+							 ***************************************************/
+							$('#department_new_btn').click(function() {
+									
+							    	$.magnificPopup.open({
+							    		  items: {
+							    		    src: '#department_pop'
+							    		  },
+							    		  type: 'inline'
+							    	});
+							});
+							
+							$('#position_new_btn').click(function() {
+								
+						    	$.magnificPopup.open({
+						    		  items: {
+						    		    src: '#position_pop'
+						    		  },
+						    		  type: 'inline'
+						    	});
+							});
+							
+							$('#task_division_new_btn').click(function() {
+								
+						    	$.magnificPopup.open({
+						    		  items: {
+						    		    src: '#task_division_pop'
+						    		  },
+						    		  type: 'inline'
+						    	});
+							});
+							
+							$('#cost_division_new_btn').click(function() {
+								
+						    	$.magnificPopup.open({
+						    		  items: {
+						    		    src: '#cost_division_pop'
+						    		  },
+						    		  type: 'inline'
+						    	});
+							});
+							
+							$('#dayoff_division_new_btn').click(function() {
+								
+						    	$.magnificPopup.open({
+						    		  items: {
+						    		    src: '#dayoff_division_pop'
+						    		  },
+						    		  type: 'inline'
+						    	});
+							});
+							
+								/***************************************************
+								 * DELETE COMFIRM
+								 ***************************************************/
+								 
+							$(".department_delete").on('click',function(){
+								if(!confirm('本当に削除しますか？')){
+							        /* キャンセルの時の処理 */
+							        return false;
+							    }else{
+							        /*　OKの時の処理 */
+							       return true;
+							    }
+							});
+								
+							$('.position_delete').on('click',function(){
+								if(!confirm('本当に削除しますか？')){
+							        /* キャンセルの時の処理 */
+							        return false;
+							    }else{
+							        /*　OKの時の処理 */
+							       return true;
+							    }
+							});
+							
+							$('.taskDivision_delete').on('click',function(){
+								if(!confirm('本当に削除しますか？')){
+							        /* キャンセルの時の処理 */
+							        return false;
+							    }else{
+							        /*　OKの時の処理 */
+							       return true;
+							    }
+							});
+							
+							$('.costDivision_delete').on('click',function(){
+								if(!confirm('本当に削除しますか？')){
+							        /* キャンセルの時の処理 */
+							        return false;
+							    }else{
+							        /*　OKの時の処理 */
+							       return true;
+							    }
+							});
+							
+							$('.dayoffDivision_delete').on('click',function(){
+								if(!confirm('本当に削除しますか？')){
+							        /* キャンセルの時の処理 */
+							        return false;
+							    }else{
+							        /*　OKの時の処理 */
+							       return true;
+							    }
+							});
+							
+					});
+			</script>
+		</body>
+</html>
+
+
+

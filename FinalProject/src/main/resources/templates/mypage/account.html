@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head th:include="include/head">
+</head>
+<head>
+  <script>
+  $(function() {
+	  $('.pop').magnificPopup({
+	   type:'inline'
+	  });
+	});
+  </script>
+  <script th:if="${errmsg1 != null || errmsg2 != null}">
+  	window.onload = function() {
+	  document.getElementById("passwordChangeButton").click();
+  	}
+  </script>
+<title>マイアカウント</title>
+</head>
+<body>
+  <div th:include="include/header"></div>
+  <div class="container col-md-8 col-md-offset-2" th:object="${employee}">
+  	<div class="panel panel-primary">
+	  <div class="panel-heading">
+		<h2 class="panel-title">アカウント情報</h2>
+	  </div>
+	  <div class="panel-body">
+	  <table class="table">
+	  <tbody>
+		<tr>
+		  <td><label>従業員コード</label></td>
+		  <td colspan="2" th:text="*{employee_id}"></td>
+		</tr>
+		<tr>
+	      <td><label>氏名</label></td>
+	      <td th:text="*{employee_name}"></td>
+	      <td th:text="*{employee_name_kana}"></td>
+		</tr>
+		<tr>
+		  <td><label>性別</label></td>
+            <td colspan="2" th:switch="*{sex}">
+		        <span th:case="'0'">男性</span>
+		        <span th:case="'1'">女性</span>
+		        <span th:case="*" th:text="*{sex}"></span>
+		    </td>
+   		</tr>
+		<tr>
+		  <td><label>生年月日</label></td>
+		  <td colspan="2" th:text="*{birthday}"></td>
+		</tr>
+		<tr>
+		  <td><label>電話番号</label></td>
+		  <td colspan="2" th:text="*{phone}"></td>
+		</tr>
+		<tr>
+		  <td rowspan="2"><label>住所</label></td>
+		  <td colspan="2" th:text="〒+*{postal}"></td>
+		</tr>
+		<tr>
+		  <td colspan="2" th:text="*{prefecture}+*{address1}+*{address2}"></td>
+		</tr>
+		<tr>
+		  <td><label>入社日</label></td>
+		  <td colspan="2" th:text="*{hire_date}"></td>
+		</tr>
+		<tr>
+		  <td><label>パスワード最終更新日</label></td>
+		  <td th:text="*{password_update}"></td>
+		  <td><a class="btn btn-primary pull-right pop" data-mfp-src="#popup" id="passwordChangeButton">パスワード変更</a></td>
+		</tr>
+		</tbody>
+		</table>
+	  </div>
+	</div>
+	<div class="panel panel-primary">
+	  <div class="panel-heading">
+		<h2 class="panel-title">雇用情報</h2>
+	  </div>
+	  <div class="panel-body">
+	    <table class="table">
+		  <tbody>
+			<tr>
+			  <td><label>部署</label></td>
+			  <td th:text="*{employmentInfo.department.department_name}"></td>
+			</tr>
+			<tr>
+			  <td><label>役職</label></td>
+			  <td th:text="*{employmentInfo.position.position_name}"></td>
+			</tr>
+			<tr>
+			  <td><label>基本給</label></td>
+			  <td th:text="*{employmentInfo.basic_salary}"></td>
+			</tr>
+			<tr>
+			  <td><label>ノルマ</label></td>
+			  <td th:text="*{employmentInfo.norma}"></td>
+			</tr>
+		  </tbody>
+		</table>
+	  </div>
+	</div>
+  </div>
+  <div id="popup" class="mfp-hide col-md-6 col-md-offset-3">
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+		<b class="panel-title">パスワード変更</b>
+	  </div>
+	  <div class="panel-body">
+		<form th:action="@{/myaccount}" th:method="post" th:object="${PasswordChangeCheck}">
+		  <div class="form-group">
+			<label>現在のパスワード</label>
+			<p class="text-danger" th:if="${errmsg1} != null" th:text="${errmsg1}"></p>
+			<input class="form-control" type="password" name="pastPass">
+		  </div>
+		  <div class="form-group">
+			<label>新しいパスワード</label>
+			<input class="form-control" type="password" name="newPass">
+		  </div>
+		  <div class="form-group">
+			<label>新しいパスワード(確認用)</label>
+			<p class="text-danger" th:if="${errmsg2} != null" th:text="${errmsg2}"></p>
+			<input class="form-control" type="password" name="checkPass">
+		  </div>
+		    <button class="btn" type="submit">更新</button>
+		</form>
+	  </div>
+	</div>
+  </div>
+</body>
+</html>

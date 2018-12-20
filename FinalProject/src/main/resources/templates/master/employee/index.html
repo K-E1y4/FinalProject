@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include/head">
+</head>
+<head>
+<title>従業員検索一覧</title>
+</head>
+	<body>
+ 		<div th:include="include/header"></div>
+		    		<div class="container" >
+							<div class="panel panel-primary" style="width: 80rem;">
+			   						<div class="panel-heading"><b>検索</b></div>
+			   						<div class="panel-body">
+							    			<form class="form-inline mr-auto"  th:action="@{/master/employee/employeeSearch}"  th:method="post"  th:object="${employeeSearch}">
+													  <b>従業員ID:</b>&nbsp;
+													  <input class="form-control mr-sm-2" type="text" name="employeeId_start" th:value="${session.employeeId_start}">
+									  				   ~ 
+									  				   <input class="form-control mr-sm-2" type="text" name="employeeId_to"  th:value="${session.employeeId_to}">
+									  				  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									  				 <b>氏名:</b>&nbsp;
+									  				 <input class="form-control mr-sm-2" type="text"  name="employee_name" th:value="${session.employee_name}" >
+									  				 <br><br>
+									  				 <b>性別:</b>&nbsp;
+									  				 <select class="form-control" name="sex" >
+														  <option th:value="未選択">ｰｰ</option>
+														  <option th:value="0" th:selected="'男性' == ${session.sex}">男性</option>
+														  <option th:value="1" th:selected="'女性' == ${session.sex}">女性</option>
+													 </select>
+													 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													 <b>年齢:</b>&nbsp;
+													<select class="form-control" name="age"  th:value ="${session.age}" >
+															<option th:value="未選択">ｰｰ</option>
+															<option th:value="20代" th:selected="'20代' == ${session.age}">20代</option>
+															<option th:value="30代" th:selected="'30代' == ${session.age}">30代</option>
+															<option th:value="40代" th:selected="'40代' == ${session.age}">40代</option>
+															<option th:value="50代" th:selected="'50代' == ${session.age}">50代</option>
+													</select>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<b>部署:</b>&nbsp;
+													<select class="form-control" name="department_name">
+										  					<option th:value="未選択">ｰｰ</option>
+										  					<option th:each="department:${session.departments}"  th:value="${department.department_name}" th:selected="${department.department_name == session.department_name}">[[${department.department_name}]]</option>
+													</select>
+													&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<b>役職:</b>&nbsp;
+													<select class="form-control" name="position_name" >
+										  					<option th:value="未選択">ｰｰ</option>
+										  					<option th:each="position:${session.positions}"  th:value="${position.position_name}" th:selected="${position.position_name == session.position_name}">[[${position.position_name}]]</option>
+													</select>
+													<br><br>
+									 				<button class="btn btn-primary pull-right" type="submit">検索</button>
+											</form>	
+			  						</div>
+							</div>
+		      				<h3>従業員一覧　<a class="btn btn-primary pull-right" href="/FinalProject2/master/employee/new">新規作成</a></h3>
+		      				<table class="table table-hover table-sm table-bordered">
+		        					<thead>
+		          							<tr>
+										            <th>従業員ID</th>
+										            <th>氏名</th>
+										            <th>性別</th>
+										            <th>年齢</th>
+										            <th>部署</th>
+										            <th>役職</th>
+										            <th></th>
+		          							</tr>
+		        					</thead>
+		        					<tbody>
+		          							<tr th:each="employee:${employees_page}" >
+										            <td th:text="${employee.employee_id}"></td>
+										            <td th:text="${employee.employee_name}"></td>
+										            <td th:if="${employee.sex} == '0'" >男性</td>
+										            <td th:if="${employee.sex} == '1'" >女性</td>
+										            <td th:text="${employee.birthday}"></td>
+										            <td th:if="${employee.employmentInfo} != null" th:text="${employee.employmentInfo.department.department_name}"></td>
+										            <td th:if="${employee.employmentInfo} == null" >退職済</td>
+										            <td th:if="${employee.employmentInfo} != null" th:text="${employee.employmentInfo.position.position_name}"></td>
+										            <td th:if="${employee.employmentInfo} == null" >退職済</td>
+		            								<td>        
+										            		<a class="btn btn-primary btn-xs" th:href="@{/master/employee/{employee_id}(employee_id=${employee.employee_id})}">詳細 編集</a>
+		            								</td>
+		          							 </tr>
+		        					</tbody>
+		      				</table>
+		      				<form th:action="@{/master/employee/pagenate}" th:object="${page}" method="get">
+				    				<div class="float-right">
+				      						<div>
+				        							<span th:text="${page.number+1}"></span>
+				    								<span>/</span>
+				    								<span th:text="${page.totalPages}"></span>
+				    								<span>頁を表示</span>
+				      						</div>
+				      						<div th:fragment='paginationbar' style="float: right;">
+				        							<ul class="pagination">
+				          									<li class="page-item">
+				              										<span th:if="${page.first}">←先頭</span>
+				            										<a th:if="${not page.first}" th:href="@{/master/employee/page={page}(page=${0})}">←先頭</a>
+				          									</li>
+				          									<li class="page-item" th:each='i : ${#numbers.sequence(0, page.totalPages-1)}'>
+				            										<span th:if='${i}==${page.number}' th:text='${i+1}'>1</span>
+				            										<a th:if='${i}!=${page.number}' th:href="@{/master/employee/page={page}(page=${i})}" class="page-link">
+				                											<span th:text='${i+1}'>1</span>
+				            										</a>
+				          									</li>
+				          									<li class="page-item">
+				            										<span th:if="${page.last}">末尾➝</span>
+				            										<a th:if="${not page.last}" th:href="@{/master/employee/page={page}(page=(${page.totalPages}-1))}">末尾➝</a>           
+				            								</li>
+				        							</ul>
+				       						</div>
+				     				</div>
+				   			</form>
+				   	</div>
+		</body>
+</html>
+
+
+

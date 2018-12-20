@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head th:include="include/head">
+</head>
+<head>
+<title>従業員詳細情報</title>
+</head>
+<body>
+  <div th:include="include/header"></div>
+  <div class="container col-md-8 col-md-offset-2" th:object="${employee}">
+  	<div class="panel panel-primary">
+	  <div class="panel-heading">
+		<h2 class="panel-title">従業員詳細情報</h2>
+	  </div>
+	  <div class="panel-body">
+	  <table class="table">
+	  <tbody>
+		<tr>
+		  <td><label>従業員コード</label></td>
+		  <td colspan="2" th:text="*{employee_id}"></td>
+		</tr>
+		<tr>
+	      <td><label>氏名</label></td>
+	      <td th:text="*{employee_name}"></td>
+	      <td th:text="*{employee_name_kana}"></td>
+		</tr>
+		<tr>
+		  <td><label>性別</label></td>
+            <td colspan="2" th:switch="*{sex}">
+		        <span th:case="'0'">男性</span>
+		        <span th:case="'1'">女性</span>
+		        <span th:case="*" th:text="*{sex}"></span>
+		    </td>
+   		</tr>
+		<tr>
+		  <td><label>生年月日</label></td>
+		  <td colspan="2" th:text="*{birthday}"></td>
+		</tr>
+		<tr>
+		  <td><label>電話番号</label></td>
+		  <td colspan="2" th:text="*{phone}"></td>
+		</tr>
+		<tr>
+		  <td rowspan="2"><label>住所</label></td>
+		  <td colspan="2" th:text="〒+*{postal}"></td>
+		</tr>
+		<tr>
+		  <td colspan="2" th:text="*{prefecture}+*{address1}+*{address2}"></td>
+		</tr>
+		<tr>
+		  <td><label>入社日</label></td>
+		  <td colspan="2" th:text="*{hire_date}"></td>
+		</tr>
+		<tr>
+		  <td><label>退社日</label></td>
+		  <td th:if="${employee.quit_date} > ${localdate_now}" colspan="2" >在職中</td>
+		  <td th:if="${employee.quit_date} < ${localdate_now}" colspan="2"  th:text="${employee.quit_date}"></td>
+		</tr>		
+		<tr>
+		  <td><label>パスワード最終更新日</label></td>
+		  <td th:text="*{password_update}"></td>
+		  <td><a class="btn btn-primary pull-right pop" data-mfp-src="#popup_employee"  th:href="@{/master/employee/{employee_id}/edit(employee_id=${employee.employee_id})}">詳細情報編集</a></td>
+		</tr>
+		</tbody>
+		</table>
+	  </div>
+	</div>
+	<div class="panel panel-primary">
+	  <div class="panel-heading">
+		<h2 class="panel-title">雇用情報</h2>
+	  </div>
+	  <div class="panel-body">
+	    <table class="table">
+		  <tbody th:if="${employee.employmentInfo} !=null">
+			<tr>
+			  <td><label>部署</label></td>
+			  <td th:text="*{employmentInfo.department.department_name}"></td>
+			</tr>
+			<tr>
+			  <td><label>役職</label></td>
+			  <td th:text="*{employmentInfo.position.position_name}"></td>
+			</tr>
+			<tr>
+			  <td><label>基本給</label></td>
+			  <td>[[*{employmentInfo.basic_salary}]]円</td>
+			</tr>
+			<tr>
+			  <td><label>ノルマ</label></td>
+			  <td>[[*{employmentInfo.norma}]]ポイント</td>
+			  <td><a class="btn btn-primary pull-right pop" id="InfoChangeButton" th:href="@{/master/employee/{employee_id}/info/edit(employee_id=${employee.employee_id})}">雇用情報編集</a></td>
+			</tr>
+		  </tbody>
+		  <tbody th:if="${employee.employmentInfo} ==null">
+		  		<tr>
+					  <td colspan="4" ><label>退職済みにより、雇用情報はありません。</label></td>
+					  <td><a class="btn btn-primary pull-right pop" id="InfoChangeButton" th:href="@{/master/employee/{employee_id}/info(employee_id=${employee.employee_id})}">雇用情報作成</a></td>
+				</tr>
+		  </tbody> 
+		</table>
+	  </div>
+	</div>
+  </div>
+</body>
+</html>

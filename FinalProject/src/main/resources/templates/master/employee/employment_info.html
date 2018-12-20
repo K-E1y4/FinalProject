@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<div th:include="include/head"></div>
+</head>
+<head>
+<title>役職情報登録</title>
+</head>
+	<body>
+ 			<div th:include="include/header"></div>
+ 			<div class="container col-md-8 col-md-offset-2">
+  	  				<div class="panel panel-primary">
+	    					<div class="panel-heading">
+	 	  							<h2 class="panel-title">役職情報　新規作成フォーム</h2>
+	    					</div>
+	    					<div class="panel-body">
+		  							<form id="realForm"  name="realForm" th:method="post"  th:action="@{./employmentInfo}"  th:object="${new_employmentInfoForm}">
+		  									<div class="form-group col-xs-7">
+			  										<label>従業員ID</label>
+ 	  		  										<input id="employee_id"  class="form-control"  th:value="${employee_id}" name="employee_id"  readonly>
+ 		  									</div>
+		    								<div class="form-group col-xs-7">
+			  										<label>部署</label>
+			  										<select id="department_id" class="form-control" name="department_id">
+			  												<option th:each="department:${departments}"  th:value="${department.department_id}">[[${department.department_name}]]</option>
+			  										</select>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+			  										<label>役職</label>
+			  										<select id="position_id" class="form-control" name="position_id">
+			  												<option th:each="position:${positions}"  th:value="${position.position_id}"  name="position_id">[[${position.position_name}]]</option>
+			  										</select>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+ 		  											<label>基本給</label>
+		 		  									<input id="basic_salary" class="form-control" type="number" name="basic_salary"  required/>円
+											</div>
+		  									<div class="form-group col-xs-7">
+	 		  										<label>ノルマ</label>
+											 	  	<input id="norma" class="form-control" type="number" name="norma"  required/>ポイント
+		  									</div>
+										    <div class="col-xs-4 col-xs-offset-4">
+										  			<button class="btn btn-primary col-xs-12 center-block" id="popup_btn">登録</button>
+											</div>
+	 	  							</form>
+ 	    					</div>
+ 	  				</div>
+			</div>
+			<div id="pass-popup" class="mfp-hide col-md-6 col-md-offset-3">
+					<div class="panel panel-default">
+	  						<div class="panel-heading">
+									<b class="panel-title">登録情報の確認</b>
+	  						</div>
+	  						<div class="panel-body">
+									<div>
+		  									<div class="form-group">
+													<label>従業員ID</label>
+													<span id="employee_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>部署</label>
+													<span id="department_name_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>役職</label>
+													<span id="position_name_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>基本給</label>
+													<span id="basic_salary_pop"></span>円
+		  									</div>
+		  									<div class="form-group">
+													<label>ノルマ</label>
+													<span id="norma_pop"></span>ポイント
+		  									</div>
+		    								<button class="btn" id="realFormSubmit">登録</button>
+									</div>
+	  						</div>
+					</div>
+  			</div>
+			<script>
+					$(function(){
+
+							$('#popup_btn').click(function() {
+								$("#realForm").submit( function(e) {
+									
+									$("#employee_id_pop").html($("#employee_id").val());
+									$("#department_name_pop").html($("#department_id option:selected").text());
+									$("#position_name_pop").html($("#position_id option:selected").text());
+									$("#basic_salary_pop").html($("#basic_salary").val());
+									$("#norma_pop").html($("#norma").val());
+
+							    	$.magnificPopup.open({
+							    		  items: {
+							    		    src: '#pass-popup'
+							    		  },
+							    		  type: 'inline'
+							    	});
+									return false;
+
+							});
+							
+							$('#realFormSubmit').click(function() {
+								document.realForm.submit();
+							});
+
+							});
+					});
+			</script>
+ 	</body>
+ </html>
