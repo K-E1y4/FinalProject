@@ -31,7 +31,7 @@
 		  <div class="panel panel-success">
 		  	<div class="panel-heading">
 		  	  <p class="text-center panel-title">獲得ポイント</p>
-		  	  <p class="text-center" th:text="${#numbers.formatInteger(#aggregates.sum(taskYearResult.![result_point]), 1,'COMMA')}"></p>
+		  	  <p class="text-center" th:text="${#numbers.formatInteger(#aggregates.sum(taskYearResult.![taskMonthlyResult.result_point]), 1,'COMMA')}"></p>
 		  	</div>
 		  </div>
 		</div>
@@ -39,11 +39,11 @@
 		  <div class="panel panel-info">
 		  	<div class="panel-heading" th:unless="${yearFlg}">
 		  	  <p class="text-center panel-title">ノルマ達成率</p>
-			  <p class="text-center" th:text="|${100 * #aggregates.sum(taskYearResult.![result_point]) / #aggregates.sum(taskYearResult.![norma])}%|"></p>
+			  <p class="text-center" th:text="|${100 * #aggregates.sum(taskYearResult.![taskMonthlyResult.result_point]) / #aggregates.sum(taskYearResult.![taskMonthlyResult.norma])}%|"></p>
 			</div>
 			<div class="panel-heading" th:if="${yearFlg}">
 		  	  <p class="text-center panel-title">ノルマ達成率</p>
-			  <p class="text-center" th:text="|${100 * #aggregates.sum(taskYearResult.![result_point]) / (#aggregates.sum(taskYearResult.![norma]) + ((12 -#lists.size(taskYearResult))* employee.employmentInfo.norma))}%|"></p>
+			  <p class="text-center" th:text="|${100 * #aggregates.sum(taskYearResult.![taskMonthlyResult.result_point]) / (#aggregates.sum(taskYearResult.![taskMonthlyResult.norma]) + ((12 -#lists.size(taskYearResult))* employee.employmentInfo.norma))}%|"></p>
 		  	</div>
 		  </div>
 		</div>
@@ -51,6 +51,7 @@
 		  <div class="panel panel-success">
 		  	<div class="panel-heading">
 		  	  <p class="text-center panel-title">部署内ランキング</p>
+		  	  <p class="text-center" th:text="|${taskYearRank.pRankDepartment}位 (${taskYearRank.paramDepartment}人中)|"></p>
 		  	</div>
 		  </div>
 		</div>
@@ -58,6 +59,7 @@
 		  <div class="panel panel-success">
 		  	<div class="panel-heading">
 		  	  <p class="text-center panel-title">社内ランキング</p>
+		  	  <p class="text-center" th:text="|${taskYearRank.pRankAll}位 (${taskYearRank.paramAll}人中)|"></p>
 		  	</div>
 		  </div>
 		</div>
@@ -81,13 +83,13 @@
 		  </thead>
 	    <th:block th:if="${#lists.size(taskYearResult)} != 0">
 		  <tbody>
-			<tr th:each="TaskMonthlyResult:${taskYearResult}" th:object="${TaskMonthlyResult}">
-			  <td th:text="*{#temporals.format(result_date,'yyyy年MM月')}"></td>
-			  <td th:text="|*{#numbers.formatInteger(result_point, 1,'COMMA')} ポイント|"></td>
-			  <td th:text="|*{#numbers.formatInteger(norma, 1,'COMMA')} ポイント|"></td>
-			  <td th:text="|*{(100* result_point / norma)} %|"></td>
-			  <td th:text="*{department_id}"></td>
-			  <td></td>
+			<tr th:each="TaskMonthlyResultWithRank:${taskYearResult}" th:object="${TaskMonthlyResultWithRank}">
+			  <td th:text="*{#temporals.format(taskMonthlyResult.result_date,'yyyy年MM月')}"></td>
+			  <td th:text="|*{#numbers.formatInteger(taskMonthlyResult.result_point, 1,'COMMA')} ポイント|"></td>
+			  <td th:text="|*{#numbers.formatInteger(taskMonthlyResult.norma, 1,'COMMA')} ポイント|"></td>
+			  <td th:text="|*{(100* taskMonthlyResult.result_point / taskMonthlyResult.norma)} %|"></td>
+			  <td th:text="|*{pRankDepartment}位 (*{paramDepartment}人中)|"></td>
+			  <td th:text="|*{pRankAll}位 (*{paramAll}人中)|"></td>
 			</tr>
 		  </tbody>
 		  </th:block>

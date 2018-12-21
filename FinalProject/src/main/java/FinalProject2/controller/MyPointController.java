@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import FinalProject2.model.Employee;
 import FinalProject2.model.MyPageMonthlyList;
 import FinalProject2.model.TaskMonthlyResult;
+import FinalProject2.model.TaskMonthlyResultWithRank;
+import FinalProject2.model.TaskYearlyResultWithRank;
 import FinalProject2.model.UserAccount;
 import FinalProject2.service.EmployeeService;
 import FinalProject2.service.MyPageMonthlyListService;
@@ -42,11 +44,15 @@ public class MyPointController {
 	public String MyPoint(@RequestParam(name = "year", defaultValue = "") String year, Model model) {
 		UserAccount user = (UserAccount) session.getAttribute("user");
 		List<TaskMonthlyResult> taskYearResult = new ArrayList<>();
+		TaskYearlyResultWithRank taskYearRank = new TaskYearlyResultWithRank();
 		if(year.equals("")) {
-			taskYearResult = taskMRService.getYearByEmployeeId(user.getUsername());
+			taskYearResult = taskMRService.getYearlyByEmployeeId(user.getUsername());
+			taskYearRank = taskMRService.getYearlyRank(user.getUsername());
 		} else {
-			taskYearResult = taskMRService.getYearByEmployeeId(user.getUsername(), year);
+			taskYearResult = taskMRService.getYearlyByEmployeeId(user.getUsername(), year);
+			taskYearRank = taskMRService.getYearlyRank(user.getUsername(), year);
 		}
+		List<TaskMonthlyResultWithRank> taskYearResultWithRank = taskMRService.getMonthlyRank(taskYearResult);
     	MyPageMonthlyList mypageML = mypageMLService.getById(user);
     	List<String> yearList = employeeService.getYearList(user.getUsername());
     	Employee employee = employeeService.findOne(user.getUsername()).get();
@@ -60,7 +66,8 @@ public class MyPointController {
     			yearFlg = true;
     		}
     	}
-		model.addAttribute("taskYearResult", taskYearResult);
+		model.addAttribute("taskYearResult", taskYearResultWithRank);
+		model.addAttribute("taskYearRank", taskYearRank);
     	model.addAttribute("mypageML", mypageML);
     	model.addAttribute("year", year);
     	model.addAttribute("yearFlg", yearFlg);

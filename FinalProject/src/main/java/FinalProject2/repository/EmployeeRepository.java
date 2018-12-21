@@ -51,4 +51,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, String> {
 	@Query("SELECT e.hire_date FROM Employee e WHERE e.employee_id = :employeeId")
 	public LocalDate getHireYear(String employeeId);
 
+	@Query("SELECT emplo FROM Employee emplo INNER JOIN EmploymentInfo info ON emplo.employee_id = info.employee_id")
+	public List<Employee> getActiveEmployeeList();
+
+	@Query("SELECT emplo FROM Employee emplo "
+			+ "LEFT OUTER JOIN EmploymentInfo info ON emplo.employee_id = info.employee_id "
+			+ "LEFT OUTER JOIN Department depart ON info.department = depart "
+			+ "WHERE depart.department_id = :departmentId")
+	public List<Employee> getDepartmentEmployeeList(String departmentId);
+
 }
