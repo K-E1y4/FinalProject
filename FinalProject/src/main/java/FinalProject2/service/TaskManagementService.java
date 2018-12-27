@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import FinalProject2.model.Employee;
 import FinalProject2.model.TaskManagement;
 import FinalProject2.model.UserAccount;
 import FinalProject2.repository.TaskManagementRepository;
@@ -17,6 +18,9 @@ public class TaskManagementService {
 
 	@Autowired
 	TaskManagementRepository taskMRepository;
+	
+	@Autowired
+	EmployeeService employeeService;
 
 	public List<TaskManagement> findUserMonthly(UserAccount user) {
 		return taskMRepository.findUserMonthly(user.getUsername());
@@ -64,11 +68,57 @@ public class TaskManagementService {
 	}
 
 	public int getPoint(String employeeId) {
-		return taskMRepository.getPoint(employeeId);
+		try {
+			return taskMRepository.getPoint(employeeId);
+		}catch (Exception e) {
+			return 0;
+		}
 	}
 
 	public int willGetPoint(String employeeId) {
-		return taskMRepository.willGetPoint(employeeId);
+		try {
+			return taskMRepository.willGetPoint(employeeId);
+		}catch (Exception e) {
+			return 0;
+		}
+	}
+
+	public int[] getRanks(int getPoint, String employeeId) {
+		int[] ranks = new int[4];
+		List<Employee> departEmployee = employeeService.findByDepartment(employeeService.findOne(employeeId).get().getEmploymentInfo().getDepartment().getDepartment_id());
+		ranks[0] = getRankDepartment(getPoint, departEmployee);
+		ranks[1] = departEmployee.size();
+		ranks[2] = getRankAll(getPoint);
+		ranks[3] = employeeService.getActiveEmployeesNumber();
+		return ranks;
+	}
+
+	private int getRankDepartment(int getPoint, List<Employee> departEmployee) {
+		List<String> empIdList = new ArrayList<>();
+		departEmployee.forEach(emp -> empIdList.add(emp.getEmployee_id()));
+		List<Long> rankDepartList = taskMRepository.getRankDepartment(empIdList);
+		int i = 1;
+		if(rankDepartList.get(0) != null) {
+			for (Long x : rankDepartList) {
+				if(x > getPoint) {
+					i++;
+				}
+			}	
+		}
+		return i;
+	}
+
+	public int getRankAll(int getPoint) {
+		List<Long> rankAllList = taskMRepository.getRankAll();
+		int i = 1;
+		if(rankAllList.get(0) != null) {
+			for (Long x : rankAllList) {
+				if(x > getPoint) {
+					i++;
+				}
+			}
+		}
+		return i;
 	}
 
 }

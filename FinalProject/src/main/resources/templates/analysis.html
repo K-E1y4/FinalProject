@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+<head th:include="include/head">
+</head>
+<head>
+<title>マイページ</title>
+<script>
+	$(window).load(function(){
+		if('[[${session.analysisForm.dSort}]]' == 'point'){
+			$("#dPoint").prop('checked', true)
+			$("#dPointBtn").addClass('active')
+			$("#dAchieveBtn").removeClass('active')
+		}else{
+			$("#dAchieve").prop('checked', true)
+			$("#dAchieveBtn").addClass('active')
+			$("#dPointBtn").removeClass('active')
+		}
+		if('[[${session.analysisForm.eSort}]]' == 'point'){
+			$("#ePoint").prop('checked', true)
+			$("#ePointBtn").addClass('active')
+			$("#eAchieveBtn").removeClass('active')
+		}else{
+			$("#eAchieve").prop('checked', true)
+			$("#eAchieveBtn").addClass('active')
+			$("#ePointBtn").removeClass('active')
+		}
+	});
+	
+	$(function(){
+		$('.onchange').change(function(){
+			$('#form').submit();
+		});
+	});
+</script>
+</head>
+<body>
+  <div th:include="include/header">
+  </div>
+  <div class="container">
+    <form th:method="post" th:action="@{/analysis}" id="form">
+	<div class="panel panel-primary">
+	  <div class="panel-heading">
+		<div class="panel-title" th:text="部署ごとのポイント所得状況">
+		</div>
+	  </div>
+	  <div class="panel-body">
+		  <div class="col-md-2">
+		  <select class="form-control onchange" name="dYear">
+			<option th:each="y:${yearList}" th:value="*{y}" th:text="*{y}+年度" th:selected="${y == session.analysisForm.dYear}"></option>
+	      </select></div>
+	      <div class="col-md-2">
+		  <select class="form-control onchange" name="dMonth">
+	        <option value="">累計</option>
+			<option th:each="m:${dMonthList}" th:value="*{m}" th:text="*{m}+月" th:selected="${m == session.analysisForm.dMonth}"></option>
+	      </select>
+	      </div>
+	      <div class="btn-group col-md-3" data-toggle="buttons">
+			<label class="btn btn-default" id="dAchieveBtn">
+			  <input type="radio" name="dSort" value="achieve" autocomplete="off" class="onchange" id="dAchieve">達成率順
+			</label>
+			<label class="btn btn-default" id="dPointBtn">
+			  <input type="radio" name="dSort" value="point" autocomplete="off" class="onchange" id="dPoint">ポイント順
+			</label>
+		  </div>
+		<table class="table table-striped">
+		  <thead>
+			<tr>
+			  <th class="col-md-1">No.</th>
+			  <th>部署名</th>
+			  <th>ポイント</th>
+			  <th>ノルマ</th>
+			  <th>達成率</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr th:each="AnalysisDepartment, stat:${analysisDepartments}" th:object="${AnalysisDepartment}">
+			  <td th:text="${stat.count}"></td>
+			  <td th:text="*{department_name}"></td>
+			  <td th:text="|*{#numbers.formatInteger(point, 1,'COMMA')} ポイント|"></td>
+			  <td th:text="|*{#numbers.formatInteger(norma, 1,'COMMA')} ポイント|"></td>
+			  <td th:text="|*{achieve} %|"></td>
+			</tr>
+		  </tbody>
+		</table>
+	  </div>
+	</div>
+	<div class="panel panel-primary">
+	  <div class="panel-heading">
+		<div class="panel-title" th:text="従業員ごとのポイント所得状況">
+		</div>
+	  </div>
+	  <div class="panel-body">
+		  <div class="col-md-2">
+		  <select class="form-control onchange" name="eYear">
+			<option th:each="y:${yearList}" th:value="*{y}" th:text="*{y}+年度" th:selected="${y == session.analysisForm.eYear}"></option>
+	      </select></div>
+	      <div class="col-md-2">
+		  <select class="form-control onchange" name="eMonth">
+	        <option value="">累計</option>
+			<option th:each="m:${eMonthList}" th:value="*{m}" th:text="*{m}+月" th:selected="${m == session.analysisForm.eMonth}"></option>
+	      </select>
+	      </div>
+	      <div class="col-md-2">
+		  <select class="form-control onchange" name="eDepartment">
+	        <option value="">全部署</option>
+			<option th:each="department:${departmentList}" th:object="${department}" th:value="*{department_id}" th:text="*{department_name}" th:selected="*{department_id} == ${session.analysisForm.eDepartment}"></option>
+	      </select>
+	      </div>
+	      <div class="btn-group col-md-3" data-toggle="buttons">
+			<label class="btn btn-default" id="eAchieveBtn">
+			  <input type="radio" name="eSort" value="achieve" autocomplete="off" class="onchange" id="eAchieve">達成率順
+			</label>
+			<label class="btn btn-default" id="ePointBtn">
+			  <input type="radio" name="eSort" value="point" autocomplete="off" class="onchange" id="ePoint">ポイント順
+			</label>
+		  </div>
+			<table class="table table-striped">
+		  <thead>
+			<tr>
+			  <th class="col-md-1">No.</th>
+			  <th>従業員名</th>
+			  <th>部署名</th>
+			  <th class="col-md-3">役職</th>
+			  <th>ポイント</th>
+			  <th>ノルマ</th>
+			  <th class="col-md-1">達成率</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr th:each="AnalysisEmployee, stat:${analysisEmployees}" th:object="${AnalysisEmployee}">
+			  <td th:text="${stat.count} + (${analysisEmployeesPage.number} * ${analysisEmployeesPage.size})"></td>
+			  <td th:text="*{employee_name}"></td>
+			  <td th:text="*{department_name}"></td>
+			  <td th:text="*{position_name}"></td>
+			  <td th:text="|*{#numbers.formatInteger(result, 1,'COMMA')} ポイント|"></td>
+			  <td th:text="|*{#numbers.formatInteger(norma, 1,'COMMA')} ポイント|"></td>
+			  <td th:text="|*{achieve} %|"></td>
+			</tr>
+		  </tbody>
+		</table>
+		<div th:fragment="paginationbar" class="pull-right">
+		  <ul class="pagination">
+		    <th:block th:each="i : ${#numbers.sequence(1, analysisEmployeesPage.totalPages)}">
+			  <li th:if="${analysisEmployeesPage.number}+1 !=*{i}">
+				<a th:href="@{/analysis/page={page}(page=*{i},)}" th:text="*{i}"></a>
+			  </li>
+			  <li class="active" th:if="${analysisEmployeesPage.number}+1 ==*{i}">
+				<a th:text="*{i}"></a>
+			  </li>
+			</th:block>
+		  </ul>
+		</div>
+	  </div>
+	</div>
+		    </form>
+  </div>
+</body>
+</html>

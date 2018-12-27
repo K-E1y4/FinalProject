@@ -49,11 +49,9 @@ public class MyBonusPointController {
 		Page<TaskMonthlyResult> taskMRP = taskMRS.findByEmployeeId(0, user.getUsername());
 		model.addAttribute("TaskMonthlyResults", taskMRP);
         model.addAttribute("taskMRP", PagenationHelper.createPagenation(taskMRP));
-        Pagination a = PagenationHelper.createPagenation(taskMRP);
 		Page<BonusPointUse> bPointUP = bPointUS.findByEmployeeId(0, 5, user.getUsername());
 		model.addAttribute("BonusPointUses", bPointUP);
         model.addAttribute("bPointUP", PagenationHelper.createPagenation(bPointUP));
-        Pagination b = PagenationHelper.createPagenation(bPointUP);
 		int getpoint = taskMRS.getSumBonusPoint(user.getUsername());
 		int usepoint = bPointUS.getSumUsePoint(user.getUsername());
 		model.addAttribute("point", getpoint - usepoint);

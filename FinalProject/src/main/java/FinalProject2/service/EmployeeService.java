@@ -348,4 +348,19 @@ public class EmployeeService {
 		return yearList;
 	}
 
+	public List<Employee> getActiveEmployeeList() {
+		return repository.getActiveEmployeeList();
+	}
+	
+	public List<Employee> findByDepartment(String departmentId){
+		return repository.getDepartmentEmployeeList(departmentId);
+	}
+
+	public List<String> getActiveEmployeeIdList() {
+		return repository.getActiveEmployeeIdList();
+	}
+
+	public List<String> getDepartmentEmployeeIdList(String departmentId) {
+		return repository.getDepartmentEmployeeIdList(departmentId);
+	}
 }

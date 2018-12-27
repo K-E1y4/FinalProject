@@ -36,6 +36,10 @@ public class TaskMonthlyResult implements Serializable {
 	@NotNull
 	private LocalDate result_date;
 	
+	@Column(name = "department_id", insertable = false, updatable = false)
+	@NotNull
+	private String department_id;
+	
 	@Column(name = "make_date")
 	@NotNull
 	private Timestamp make_date;
@@ -51,6 +55,10 @@ public class TaskMonthlyResult implements Serializable {
 	@Column(name = "update_user")
 	@NotNull
 	private String update_user;
+	
+	@ManyToOne
+	@JoinColumn(name="department_id")
+	private Department department;
 
 	public String getTask_monthly_result_id() {
 		return task_monthly_result_id;
@@ -130,6 +138,22 @@ public class TaskMonthlyResult implements Serializable {
 
 	public void setUpdate_user(String update_user) {
 		this.update_user = update_user;
+	}
+
+	public String getDepartment_id() {
+		return department_id;
+	}
+
+	public void setDepartment_id(String department_id) {
+		this.department_id = department_id;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
 	}
 
 }

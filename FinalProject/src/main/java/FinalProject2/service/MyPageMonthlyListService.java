@@ -26,10 +26,11 @@ public class MyPageMonthlyListService {
 		mpml.setGetPoint(taskMService.getPoint(user.getUsername()));
 		mpml.setWillGetPoint(taskMService.willGetPoint(user.getUsername()));
 		mpml.setNorma(employeeService.findOne(user.getUsername()).get().getEmploymentInfo().getNorma());
-//		mpml.setRankA(rankA);
-//		mpml.setRankATotal(rankATotal);
-//		mpml.setRankD();
-//		mpml.setRankDTotal(rankDTotal);
+		int[] ranks = taskMService.getRanks(mpml.getGetPoint(), user.getUsername());
+		mpml.setRankD(ranks[0]);
+		mpml.setRankDTotal(ranks[1]);
+		mpml.setRankA(ranks[2]);
+		mpml.setRankATotal(ranks[3]);
 		return mpml;
 	}
 

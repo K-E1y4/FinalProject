@@ -45,4 +45,10 @@ public interface TaskManagementRepository extends JpaRepository<TaskManagement, 
 	@Query("SELECT SUM(t.point) FROM TaskManagement t where t.employee_id = :employeeId and t.end_date IS NULL and YEAR(t.due_date) = YEAR(GETDATE()) and MONTH(t.due_date) = MONTH(GETDATE()) GROUP BY t.point")
 	int willGetPoint(String employeeId);
 
+	@Query("SELECT SUM(t.point) FROM TaskManagement t WHERE YEAR(t.end_date) = YEAR(GETDATE()) and MONTH(t.end_date) = MONTH(GETDATE())")
+	List<Long> getRankAll();
+
+	@Query("SELECT SUM(t.point) FROM TaskManagement t WHERE YEAR(t.end_date) = YEAR(GETDATE()) and MONTH(t.end_date) = MONTH(GETDATE()) and employee_id IN :emp")
+	List<Long> getRankDepartment(List<String> emp);
+
 }

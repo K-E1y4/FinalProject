@@ -35,7 +35,7 @@
 	 	  	  	  </tr>
 	 	  	  	  </tboby>
 		  	  	</table>
-				<div th:fragment='paginationbar' class="pull-right">
+				<div th:fragment="paginationbar" class="pull-right">
 				  <ul class="pagination" th:object="${taskMRP}">
 					<li th:if="*{number} != 0">
 					  <a th:href="@{/mybonuspoint/page?taskmonthly={pageT}&bonuspoint={pageB}(pageT=${1}, pageB=${bPointUP.number+1})}">1</a>

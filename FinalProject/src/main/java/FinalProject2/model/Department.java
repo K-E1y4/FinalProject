@@ -40,6 +40,9 @@ public class Department implements Serializable {
 	@OneToMany(mappedBy="department")
 	private List<EmploymentInfo> employmentInfoList;
 
+	@OneToMany(mappedBy="department")
+	private List<TaskMonthlyResult> taskMonthlyResultList;
+
 	public String getDepartment_id() {
 		return department_id;
 	}

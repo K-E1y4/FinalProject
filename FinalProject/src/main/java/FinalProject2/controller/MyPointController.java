@@ -1,5 +1,7 @@
 package FinalProject2.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import FinalProject2.model.Employee;
 import FinalProject2.model.MyPageMonthlyList;
 import FinalProject2.model.TaskMonthlyResult;
+import FinalProject2.model.TaskMonthlyResultWithRank;
+import FinalProject2.model.TaskYearlyResultWithRank;
 import FinalProject2.model.UserAccount;
 import FinalProject2.service.EmployeeService;
 import FinalProject2.service.MyPageMonthlyListService;
@@ -40,16 +44,33 @@ public class MyPointController {
 	public String MyPoint(@RequestParam(name = "year", defaultValue = "") String year, Model model) {
 		UserAccount user = (UserAccount) session.getAttribute("user");
 		List<TaskMonthlyResult> taskYearResult = new ArrayList<>();
+		TaskYearlyResultWithRank taskYearRank = new TaskYearlyResultWithRank();
 		if(year.equals("")) {
-			taskYearResult = taskMRService.getYearByEmployeeId(user.getUsername());
+			taskYearResult = taskMRService.getYearlyByEmployeeId(user.getUsername());
+			taskYearRank = taskMRService.getYearlyRank(user.getUsername());
 		} else {
-			taskYearResult = taskMRService.getYearByEmployeeId(user.getUsername(), year);
+			taskYearResult = taskMRService.getYearlyByEmployeeId(user.getUsername(), year);
+			taskYearRank = taskMRService.getYearlyRank(user.getUsername(), year);
 		}
+		List<TaskMonthlyResultWithRank> taskYearResultWithRank = taskMRService.getMonthlyRank(taskYearResult);
     	MyPageMonthlyList mypageML = mypageMLService.getById(user);
     	List<String> yearList = employeeService.getYearList(user.getUsername());
     	Employee employee = employeeService.findOne(user.getUsername()).get();
-		model.addAttribute("taskYearResult", taskYearResult);
+    	//拾ってくるデータが今年度のものかどうかの判定
+    	boolean yearFlg = false;
+    	if(!(taskYearResult.isEmpty() || year.equals(""))){
+    		LocalDate resultDate = taskYearResult.get(0).getResult_date();
+    		LocalDate yStart = LocalDate.parse(yearList.get(0) + "-04-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    		LocalDate yEnd = LocalDate.parse(Integer.toString(Integer.parseInt(yearList.get(0))+1) + "-03-31", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    		if(resultDate.isAfter(yStart) && resultDate.isBefore(yEnd)) {
+    			yearFlg = true;
+    		}
+    	}
+		model.addAttribute("taskYearResult", taskYearResultWithRank);
+		model.addAttribute("taskYearRank", taskYearRank);
     	model.addAttribute("mypageML", mypageML);
+    	model.addAttribute("year", year);
+    	model.addAttribute("yearFlg", yearFlg);
     	model.addAttribute("yearList", yearList);
     	model.addAttribute("employee", employee);
 		return "mypage/point";
