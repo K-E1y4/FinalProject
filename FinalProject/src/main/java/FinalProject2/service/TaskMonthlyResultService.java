@@ -13,11 +13,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import FinalProject2.model.AnalysisDepartment;
+import FinalProject2.model.AnalysisEmployee;
+import FinalProject2.model.AnalysisForm;
+import FinalProject2.model.Department;
 import FinalProject2.model.Employee;
 import FinalProject2.model.TaskMonthlyResult;
 import FinalProject2.model.TaskMonthlyResultWithRank;
 import FinalProject2.model.TaskYearlyResult;
 import FinalProject2.model.TaskYearlyResultWithRank;
+import FinalProject2.model.testE;
 import FinalProject2.repository.EmployeeRepository;
 import FinalProject2.repository.TaskMonthlyResultRepository;
 import FinalProject2.utility.UtilityMethod;
@@ -32,9 +37,12 @@ public class TaskMonthlyResultService{
 	@Autowired
 	EmployeeService employeeService;
 
-	private final int pageSize = 3;
+	private final int PAGESIZE = 3;
 	
 	UtilityMethod util = new UtilityMethod();
+
+	@Autowired
+	DepartmentService departmentService;
 
 	public List<TaskMonthlyResult> findAll() {
 	    return taskMRR.findAll();
@@ -63,7 +71,7 @@ public class TaskMonthlyResultService{
 	}
 
 	public Page<TaskMonthlyResult> findByEmployeeId(int pageNum, String employeeId) {
-		return taskMRR.findByEmployeeId(employeeId, PageRequest.of(pageNum<=0?0:pageNum, pageSize));
+		return taskMRR.findByEmployeeId(employeeId, PageRequest.of(pageNum<=0?0:pageNum, PAGESIZE));
 	}
 
 	public List<TaskMonthlyResult> getYearlyByEmployeeId(String employeeId) {
@@ -155,5 +163,84 @@ public class TaskMonthlyResultService{
 
 		return taskYearRank;
 	}
+
+	
+	public List<AnalysisDepartment> getAnalysisDepartmentList() {
+		LocalDate[] years = util.getYear();
+		List<AnalysisDepartment> yAnalysisDListS = taskMRR.getAnalysisDepartmentListOrderByAchieve(years[0], years[1]);
+		return yAnalysisDListS;
+}
+
+	public List<AnalysisEmployee> getAnalysisEmployeeList() {
+		LocalDate[] years = util.getYear();
+		List<String> activeEmployeeIdList = employeeService.getActiveEmployeeIdList();
+		List<AnalysisEmployee> yAnalysisEListS = taskMRR.getAnalysisEmployeeListOrderByAchieve(activeEmployeeIdList, years[0], years[1]);
+		return yAnalysisEListS;
+	}
+
+
+	public List<AnalysisDepartment> getAnalysisDepartmentList(AnalysisForm af) {
+		LocalDate[] years = new LocalDate[2];
+		if(af.equals(null)) {
+			years = util.getYear();
+		} else {
+			years = util.getYear(af.geteYear(), af.geteMonth());
+			if(af.geteSort().equals("point")) {
+				List<AnalysisDepartment> analysisDepartmentPage = taskMRR.getAnalysisDepartmentListOrderByResult(years[0], years[1]);
+				return analysisDepartmentPage;
+			}
+		}
+		List<AnalysisDepartment> analysisDepartmentPage = taskMRR.getAnalysisDepartmentListOrderByAchieve(years[0], years[1]);
+		return analysisDepartmentPage;
+	}
+
+	public Page<AnalysisEmployee> getAnalysisEmployeePage(int pageNum, int pageSize) {
+		LocalDate[] years = util.getYear();
+		List<String> employeeIdList = employeeService.getActiveEmployeeIdList();
+		Page<AnalysisEmployee> analysisEmployeePage = taskMRR.getAnalysisEmployeePageOrderByAchieve(employeeIdList, years[0], years[1],  PageRequest.of(pageNum<=0?0:pageNum, pageSize));
+		return analysisEmployeePage;
+	}
+	
+	public Page<AnalysisEmployee> getAnalysisEmployeePage(AnalysisForm af, int pageNum, int pageSize) {
+		LocalDate[] years = new LocalDate[2];
+		List<String> employeeIdList = new ArrayList<>();
+		years = util.getYear(af.geteYear(), af.geteMonth());
+		if(af.geteDepartment().equals("")) {
+			employeeIdList = employeeService.getActiveEmployeeIdList();
+		} else {
+			employeeIdList = employeeService.getDepartmentEmployeeIdList(af.geteDepartment());
+		}
+		if(af.geteSort().equals("point")) {
+			Page<AnalysisEmployee> analysisEmployeePage = taskMRR.getAnalysisEmployeePageOrderByResult(employeeIdList, years[0], years[1],  PageRequest.of(pageNum<=0?0:pageNum, pageSize));
+			return analysisEmployeePage;
+		}
+		Page<AnalysisEmployee> analysisEmployeePage = taskMRR.getAnalysisEmployeePageOrderByAchieve(employeeIdList, years[0], years[1],  PageRequest.of(pageNum<=0?0:pageNum, pageSize));
+		return analysisEmployeePage;
+	}
+	
+	public List<String> getYearList() {
+		LocalDate oldestDate = taskMRR.getOldestDate();
+		int oYear = 0;
+		if(oldestDate.getMonth().getValue() < 4) {
+			oYear = oldestDate.getYear() - 1;
+		} else {
+			oYear = oldestDate.getYear();
+		}
+		
+		LocalDate nowDate = LocalDate.now();
+		int nYear = 0;
+		if(nowDate.getMonthValue() < 4) {
+			nYear = nowDate.getYear() - 1;
+		} else {
+			nYear = nowDate.getYear();
+		}
+		
+		List<String> yearList = new ArrayList<>(); 
+		for(int i = nYear; i >= oYear; i--) {
+			yearList.add(Integer.toString(i));
+		}
+		return yearList;
+	}
+
 }
 

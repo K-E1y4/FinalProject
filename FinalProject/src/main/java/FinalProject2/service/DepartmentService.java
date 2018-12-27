@@ -33,6 +33,9 @@ public class DepartmentService {
 	@Autowired
 	HttpSession session;
 	
+	public Department getOne(String id) {
+		return repository.getOne(id);
+	}
 	public Page<Department> findAll(int page) {
 		return repository.findAll(PageRequest.of(page<=0?0:page, PAGE_SIZE));
 	}

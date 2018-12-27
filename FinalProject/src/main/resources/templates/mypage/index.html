@@ -27,7 +27,7 @@
 			</tr>
 		  </thead>
 		  <tbody>
-			<tr class="bg-danger" th:each="TaskManagement, stat:${taskExpiredList}" th:object="${TaskManagement}">
+			<tr class="danger" th:each="TaskManagement, stat:${taskExpiredList}" th:object="${TaskManagement}">
 			  <td th:text="${stat.count}"></td>
 			  <td th:text="*{taskDetail.task_detail_name}"></td>
 			  <td th:text="*{taskDetail.task.employee.employee_name}"></td>
@@ -46,7 +46,7 @@
 	  </div>
 	  <div class="container col-md-7">
 	  <div class="panel panel-success">
-		<table class="table" th:object="${mypageML}">
+		<table th:if="${mypageML} != null" class="table" th:object="${mypageML}">
 		  <tr>
 		  	<th>現在のポイント状況</th>
 		  	<td th:text="|*{getPoint} ポイント|"></td>
@@ -65,11 +65,11 @@
 		  </tr>
 		  <tr>
 		  	<th>部署内ランキング</th>
-		  	<td></td>
+		  	<td th:text="|*{rankD}位(*{rankDTotal}人中)|"></td>
 		  </tr>
 		  <tr>
 		  	<th>社内ランキング</th>
-		  	<td></td>
+		  	<td th:text="|*{rankA}位(*{rankATotal}人中)|"></td>
 		  </tr>
 		</table>
 	  </div>

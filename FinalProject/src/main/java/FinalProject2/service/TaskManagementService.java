@@ -77,21 +77,36 @@ public class TaskManagementService {
 
 	public int[] getRanks(int getPoint, String employeeId) {
 		int[] ranks = new int[4];
-		int[0] = 1 + getRankDepartment(getPoint, employeeService.findOne(employeeId).get());
-		int[1] = employeeService.findByDepartment(employeeService.findOne(employeeId).get().getEmploymentInfo().getDepartment().getDepartment_id()).size();
-		int[2] = 1 + getRankAll(getPoint);
-		int[3] = employeeService.getActiveEmployeesNumber();
-		return null;
+		List<Employee> departEmployee = employeeService.findByDepartment(employeeService.findOne(employeeId).get().getEmploymentInfo().getDepartment().getDepartment_id());
+		ranks[0] = getRankDepartment(getPoint, departEmployee);
+		ranks[1] = departEmployee.size();
+		ranks[2] = getRankAll(getPoint);
+		ranks[3] = employeeService.getActiveEmployeesNumber();
+		return ranks;
 	}
 
-	private int getRankDepartment(int getPoint, Employee employee) {
-		List<String> rankDepartmentList = taskMRepository.getRankDepartment(getPoint, employee.getEmploymentInfo().getDepartment().getDepartment_id());
-		return rankDepartmentList.size()+1;
+	private int getRankDepartment(int getPoint, List<Employee> departEmployee) {
+		List<String> empIdList = new ArrayList<>();
+		departEmployee.forEach(emp -> empIdList.add(emp.getEmployee_id()));
+		List<Long> rankDepartList = taskMRepository.getRankDepartment(empIdList);
+		int i = 1;
+		for (Long x : rankDepartList) {
+			if(x > getPoint) {
+				i++;
+			}
+		}
+		return i;
 	}
 
 	public int getRankAll(int getPoint) {
-		List<String> rankAllList = taskMRepository.getRankAll(getPoint);
-		return rankAllList.size()+1;
+		List<Long> rankAllList = taskMRepository.getRankAll();
+		int i = 1;
+		for (Long x : rankAllList) {
+			if(x > getPoint) {
+				i++;
+			}
+		}
+		return i;
 	}
 
 }
