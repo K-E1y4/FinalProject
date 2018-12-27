@@ -179,8 +179,8 @@ public interface TaskMonthlyResultRepository extends JpaRepository<TaskMonthlyRe
 	@Query("select t.employee_id as id ,SUM(t.result_point) as result_point, SUM(t.norma) as norma from TaskMonthlyResult t where t.result_point > :resultPoint and t.result_date BETWEEN :yStart and :yEnd group by t.employee_id ORDER BY result_point DESC")
 	List<String> getYearlyRankAll(int resultPoint, LocalDate yStart, LocalDate yEnd);
 
-	@Query("select t.employee_id as id ,SUM(t.result_point) as result_point, SUM(t.norma) as norma from TaskMonthlyResult t where t.employee_id = :employeeId and t.result_date BETWEEN :yStart and :yEnd group by t.employee_id")
-	String getTaskYearlyResult(String employeeId, LocalDate yStart, LocalDate yEnd);
+	@Query("select new FinalProject2.model.TaskYearlyResult(t.employee_id as id ,SUM(t.result_point) as result_point, SUM(t.norma) as norma) from TaskMonthlyResult t where t.employee_id = :employeeId and t.result_date BETWEEN :yStart and :yEnd group by t.employee_id")
+	TaskYearlyResult getTaskYearlyResult(String employeeId, LocalDate yStart, LocalDate yEnd);
 
 	@Query("select MIN(t.result_date) FROM TaskMonthlyResult t ")
 	LocalDate getOldestDate();

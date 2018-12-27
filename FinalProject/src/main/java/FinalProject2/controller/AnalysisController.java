@@ -59,7 +59,9 @@ public class AnalysisController {
 		model.addAttribute("departmentList", departmentList);
 		model.addAttribute("analysisDepartments", analysisDepartments);
 		model.addAttribute("analysisEmployees", analysisEmployees);
-		model.addAttribute("analysisEmployeesPage", PagenationHelper.createPagenation(analysisEmployees));
+		if(analysisEmployees != null) {
+			model.addAttribute("analysisEmployeesPage", PagenationHelper.createPagenation(analysisEmployees));
+		}
 		return "analysis";
 	}
 	
@@ -78,7 +80,9 @@ public class AnalysisController {
 		model.addAttribute("departmentList", departmentList);
 		model.addAttribute("analysisDepartments", analysisDepartments);
 		model.addAttribute("analysisEmployees", analysisEmployees);
-		model.addAttribute("analysisEmployeesPage", PagenationHelper.createPagenation(analysisEmployees));
+		if(analysisEmployees != null) {
+			model.addAttribute("analysisEmployeesPage", PagenationHelper.createPagenation(analysisEmployees));
+		}
 		return "analysis";
 	}
 

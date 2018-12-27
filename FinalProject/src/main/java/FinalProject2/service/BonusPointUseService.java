@@ -22,7 +22,11 @@ public class BonusPointUseService {
 	BonusPointUseRepository bPointUR;
 	
 	public int getSumUsePoint(String username) {
-		return bPointUR.getSumUsePoint(username);
+		try {
+			return bPointUR.getSumUsePoint(username);
+		}catch (Exception e) {
+		}
+		return 0;
 	}
 
 	@Transactional

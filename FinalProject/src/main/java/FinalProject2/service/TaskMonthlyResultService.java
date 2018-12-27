@@ -62,8 +62,11 @@ public class TaskMonthlyResultService{
     }
 
 	public int getSumBonusPoint(String username) {
-		return taskMRR.getSumBonusPoint(username);
-
+		try {
+			return taskMRR.getSumBonusPoint(username);
+		}catch (Exception e) {
+		}
+		return 0;
 	}
 
 	public List<TaskMonthlyResult> findByEmployeeId(String employeeId) {
@@ -108,21 +111,22 @@ public class TaskMonthlyResultService{
 
 	public TaskYearlyResultWithRank getYearlyRank(String employeeId, String year) {
 		LocalDate[] years = util.getYear(year);
-		TaskYearlyResult taskYearResult = new TaskYearlyResult();
-		String aaa = taskMRR.getTaskYearlyResult(employeeId, years[0], years[1]);
-		String[] taskyear = aaa.split(",", 0);
-		taskYearResult.setId(taskyear[0]);
-		taskYearResult.setResult_point(Integer.parseInt(taskyear[1]));
-		taskYearResult.setNorma(Integer.parseInt(taskyear[2]));
-		Employee employee = employeeService.findOne(employeeId).get();
-		int pRankDepartment = 1 + taskMRR.getYearlyRankByDepartment(taskYearResult.getResult_point(), employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]).size();
-		int pRankAll = 1 + taskMRR.getYearlyRankAll(taskYearResult.getResult_point(), years[0], years[1]).size();
-		int aRankDepartment = 1;
-		int aRankAll = 1;
-		List<String> aaaa = taskMRR.getYearlyResultByDepartment(employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]);
-		int paramDepartment = taskMRR.getYearlyResultByDepartment(employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]).size();
-		int paramAll = taskMRR.getYearlyResultAll(years[0], years[1]).size();
-
+		TaskYearlyResult taskYearResult = taskMRR.getTaskYearlyResult(employeeId, years[0], years[1]);
+		int pRankDepartment = 0;
+		int pRankAll = 0;
+		int aRankDepartment = 0;
+		int aRankAll = 0;
+		int paramDepartment = 0;
+		int paramAll = 0;
+		if(taskYearResult != null) {
+			Employee employee = employeeService.findOne(employeeId).get();
+			pRankDepartment = 1 + taskMRR.getYearlyRankByDepartment((int) taskYearResult.getResult_point(), employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]).size();
+			pRankAll = 1 + taskMRR.getYearlyRankAll((int) taskYearResult.getResult_point(), years[0], years[1]).size();
+			aRankDepartment = 1;
+			aRankAll = 1;
+			paramDepartment = taskMRR.getYearlyResultByDepartment(employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]).size();
+			paramAll = taskMRR.getYearlyResultAll(years[0], years[1]).size();
+		}
 		TaskYearlyResultWithRank taskYearRank = new TaskYearlyResultWithRank();
 		taskYearRank.setTaskYearlyResult(taskYearResult);
 		taskYearRank.setpRankDepartment(pRankDepartment);
@@ -137,21 +141,22 @@ public class TaskMonthlyResultService{
 	
 	public TaskYearlyResultWithRank getYearlyRank(String employeeId) {
 		LocalDate[] years = util.getLast12();
-		TaskYearlyResult taskYearResult = new TaskYearlyResult();
-		String aaa = taskMRR.getTaskYearlyResult(employeeId, years[0], years[1]);
-		String[] taskyear = aaa.split(",", 0);
-		taskYearResult.setId(taskyear[0]);
-		taskYearResult.setResult_point(Integer.parseInt(taskyear[1]));
-		taskYearResult.setNorma(Integer.parseInt(taskyear[2]));
-		Employee employee = employeeService.findOne(employeeId).get();
-		int pRankDepartment = 1 + taskMRR.getYearlyRankByDepartment(taskYearResult.getResult_point(), employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]).size();
-		int pRankAll = 1 + taskMRR.getYearlyRankAll(taskYearResult.getResult_point(), years[0], years[1]).size();
-		int aRankDepartment = 1;
-		int aRankAll = 1;
-		List<String> aaaa = taskMRR.getYearlyResultByDepartment(employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]);
-		int paramDepartment = taskMRR.getYearlyResultByDepartment(employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]).size();
-		int paramAll = taskMRR.getYearlyResultAll(years[0], years[1]).size();
-
+		TaskYearlyResult taskYearResult = taskMRR.getTaskYearlyResult(employeeId, years[0], years[1]);
+		int pRankDepartment = 0;
+		int pRankAll = 0;
+		int aRankDepartment = 0;
+		int aRankAll = 0;
+		int paramDepartment = 0;
+		int paramAll = 0;
+		if(taskYearResult != null) {
+			Employee employee = employeeService.findOne(employeeId).get();
+			pRankDepartment = 1 + taskMRR.getYearlyRankByDepartment((int) taskYearResult.getResult_point(), employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]).size();
+			pRankAll = 1 + taskMRR.getYearlyRankAll((int) taskYearResult.getResult_point(), years[0], years[1]).size();
+			aRankDepartment = 1;
+			aRankAll = 1;
+			paramDepartment = taskMRR.getYearlyResultByDepartment(employee.getEmploymentInfo().getDepartment().getDepartment_id(), years[0], years[1]).size();
+			paramAll = taskMRR.getYearlyResultAll(years[0], years[1]).size();
+		}
 		TaskYearlyResultWithRank taskYearRank = new TaskYearlyResultWithRank();
 		taskYearRank.setTaskYearlyResult(taskYearResult);
 		taskYearRank.setpRankDepartment(pRankDepartment);
@@ -184,7 +189,7 @@ public class TaskMonthlyResultService{
 		if(af.equals(null)) {
 			years = util.getYear();
 		} else {
-			years = util.getYear(af.geteYear(), af.geteMonth());
+			years = util.getYear(af.getdYear(), af.getdMonth());
 			if(af.geteSort().equals("point")) {
 				List<AnalysisDepartment> analysisDepartmentPage = taskMRR.getAnalysisDepartmentListOrderByResult(years[0], years[1]);
 				return analysisDepartmentPage;
@@ -209,6 +214,9 @@ public class TaskMonthlyResultService{
 			employeeIdList = employeeService.getActiveEmployeeIdList();
 		} else {
 			employeeIdList = employeeService.getDepartmentEmployeeIdList(af.geteDepartment());
+		}
+		if(employeeIdList.isEmpty()) {
+			return null;
 		}
 		if(af.geteSort().equals("point")) {
 			Page<AnalysisEmployee> analysisEmployeePage = taskMRR.getAnalysisEmployeePageOrderByResult(employeeIdList, years[0], years[1],  PageRequest.of(pageNum<=0?0:pageNum, pageSize));
