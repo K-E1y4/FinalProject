@@ -1,10 +1,8 @@
 package FinalProject2.service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import FinalProject2.model.AnalysisDepartment;
 import FinalProject2.model.AnalysisEmployee;
 import FinalProject2.model.AnalysisForm;
-import FinalProject2.model.Department;
 import FinalProject2.model.Employee;
 import FinalProject2.model.TaskMonthlyResult;
 import FinalProject2.model.TaskMonthlyResultWithRank;
 import FinalProject2.model.TaskYearlyResult;
 import FinalProject2.model.TaskYearlyResultWithRank;
-import FinalProject2.model.testE;
-import FinalProject2.repository.EmployeeRepository;
 import FinalProject2.repository.TaskMonthlyResultRepository;
 import FinalProject2.utility.UtilityMethod;
 
@@ -100,8 +95,8 @@ public class TaskMonthlyResultService{
 			tMRwR.setTaskMonthlyResult(taskM);
 			tMRwR.setpRankDepartment(pRankDepartment);
 			tMRwR.setpRankAll(pRankAll);
-//			tMRwR.setaRankDepartment(aRankDepartment);
-//			tMRwR.setaRankAll(aRankAll);
+			tMRwR.setaRankDepartment(aRankDepartment);
+			tMRwR.setaRankAll(aRankAll);
 			tMRwR.setParamDepartment(paramDepartment);
 			tMRwR.setParamAll(paramAll);
 			yearResultWithRank.add(tMRwR);

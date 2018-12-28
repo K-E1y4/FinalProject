@@ -71,8 +71,10 @@ public class TaskManagementController {
 		        List<Task> tasks = taskService.findAll();
 		        List<Employee> employees = taskManagementService.getTantousya();
 		        List<TaskDetail> taskDetails = taskDetailService.findTaskManagementAddedl();
-
 		        
+				TaskManagementSearch taskManagementSearch = new TaskManagementSearch();
+				session.setAttribute("taskManagementSearch", taskManagementSearch );
+
 		        model.addAttribute("taskManagement_page", taskManagement_page);
 		        model.addAttribute("page", PagenationHelper.createPagenation(taskManagement_page));
 		        
@@ -258,14 +260,6 @@ public class TaskManagementController {
 //		
 		@PostMapping("taskManagementSearch")
 		public String taskManagementSearch(@Valid @ModelAttribute TaskManagementSearch taskManagementSearch, Model model) {
-			
-			//検索条件をセッションに格納して、indexで取り出す
-			session.setAttribute("task_id", taskManagementSearch.getTask_id());
-			session.setAttribute("task_detail_id", taskManagementSearch.getTask_detail_id());
-			session.setAttribute("employee_id", taskManagementSearch.getEmployee_id());
-			session.setAttribute("due_date_from", taskManagementSearch.getDue_date_from());
-			session.setAttribute("due_date_to", taskManagementSearch.getDue_date_to());
-			session.setAttribute("end_flg", taskManagementSearch.getEnd_flg());
 			
 			//paginateメソッドで使用する為に検索条件をセッション格納
 			session.setAttribute("taskManagementSearch", taskManagementSearch);

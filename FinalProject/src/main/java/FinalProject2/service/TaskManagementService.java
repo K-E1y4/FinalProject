@@ -137,7 +137,7 @@ public class TaskManagementService {
 	}
 
 	public Page<TaskManagement> findBySearch(int firstPage, @Valid TaskManagementSearch taskManagementSearch) {
-		
+		Page<TaskManagement> taskManagementPage = null;
 		String task_id = taskManagementSearch.getTask_id();
 		String taskDetail_id = taskManagementSearch.getTask_detail_id();
 		String employee_id = taskManagementSearch.getEmployee_id();
@@ -145,67 +145,32 @@ public class TaskManagementService {
 		String due_date_from_str = taskManagementSearch.getDue_date_from();
 		LocalDate due_date_from;
 		if(due_date_from_str.equals("")) {
-			due_date_from = mostPastDueDate();
+			due_date_from = taskMRepository.getMaxDueDate();
 		}else {
 			due_date_from = LocalDate.parse(due_date_from_str, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		}
 		String due_date_to_str = taskManagementSearch.getDue_date_to();
 		LocalDate due_date_to;
 		if(due_date_to_str.equals("")) {
-			due_date_to = mostPresentDueDate();
+			due_date_to = taskMRepository.getMinDueDate();
 		}else {
 			due_date_to =  LocalDate.parse(due_date_to_str, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		}
 		
 		String end_flg = taskManagementSearch.getEnd_flg();
-		Boolean end_flg_A = false; Boolean end_flg_B = false;
 		switch(end_flg) {
 		case "全て":
-			end_flg_A = false;
-			end_flg_B = true;
+			taskManagementPage = taskMRepository.findBySearch(task_id, taskDetail_id, employee_id, due_date_from, due_date_to, PageRequest.of(firstPage<=0?0:firstPage, PAGE_SIZE));
 			break;
 		case "未完了":
-			end_flg_A = false;
-			end_flg_B = false;
+			taskManagementPage = taskMRepository.findBySearchNotEndTask(task_id, taskDetail_id, employee_id, due_date_from, due_date_to, PageRequest.of(firstPage<=0?0:firstPage, PAGE_SIZE));
 			break;
 		case "完了":
-			end_flg_A = true;
-			end_flg_B = true;
+			taskManagementPage = taskMRepository.findBySearchEndTask(task_id, taskDetail_id, employee_id, due_date_from, due_date_to, PageRequest.of(firstPage<=0?0:firstPage, PAGE_SIZE));
 			break;
 		}
 		
-		return taskMRepository.findBySearch(task_id, taskDetail_id, employee_id, due_date_from, due_date_to, 
-				end_flg_A, end_flg_B, PageRequest.of(firstPage<=0?0:firstPage, PAGE_SIZE));
-	}
-
-	private LocalDate mostPresentDueDate() {
-		LocalDate mostPastDueDate = LocalDate.now();
-		int compareResult;
-		for(TaskManagement taskManagement: findAll()) {
-			compareResult = mostPastDueDate.compareTo(taskManagement.getDue_date());
-			//compare 小さいは正（古い）、大きいは負（新しい）
-			if(compareResult < 0) {
-				mostPastDueDate = taskManagement.getDue_date();
-			}
-		}
-		return mostPastDueDate;
-	}
-
-	private List<TaskManagement> findAll() {
-		return taskMRepository.findAll();
-	}
-
-	private LocalDate mostPastDueDate() {
-		LocalDate mostPresentDueDate = LocalDate.now();
-		int compareResult;
-		for(TaskManagement taskManagement: findAll()) {
-			compareResult = mostPresentDueDate.compareTo(taskManagement.getDue_date());
-			//compare 小さいは正（古い）、大きいは負（新しい）
-			if(compareResult > 0) {
-				mostPresentDueDate = taskManagement.getDue_date();
-			}
-		}
-		return mostPresentDueDate;
+		return taskManagementPage;
 	}
 
 	public int getPoint(String employeeId) {

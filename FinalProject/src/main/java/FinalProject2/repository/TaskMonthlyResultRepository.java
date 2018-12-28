@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +14,6 @@ import FinalProject2.model.AnalysisDepartment;
 import FinalProject2.model.AnalysisEmployee;
 import FinalProject2.model.TaskMonthlyResult;
 import FinalProject2.model.TaskYearlyResult;
-import FinalProject2.model.testE;
 
 @Repository
 public interface TaskMonthlyResultRepository extends JpaRepository<TaskMonthlyResult, String>{

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import FinalProject2.model.Department;
 import FinalProject2.model.Employee;
-import FinalProject2.model.EmployeeNewForm;
 import FinalProject2.model.EmployeeSearch;
 import FinalProject2.model.EmploymentInfo;
 import FinalProject2.model.EmploymentInfoForm;

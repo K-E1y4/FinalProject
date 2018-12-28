@@ -4,7 +4,7 @@ public class TaskMonthlyResultWithRank {
 
 	private TaskMonthlyResult taskMonthlyResult;
 	private int pRankDepartment, pRankAll;
-	private int aRrankDepartment, aRankAll;
+	private int aRankDepartment, aRankAll;
 	private int paramDepartment, paramAll;
 	
 	public TaskMonthlyResult getTaskMonthlyResult() {
@@ -25,11 +25,11 @@ public class TaskMonthlyResultWithRank {
 	public void setpRankAll(int pRankAll) {
 		this.pRankAll = pRankAll;
 	}
-	public int getaRrankDepartment() {
-		return aRrankDepartment;
+	public int getaRankDepartment() {
+		return aRankDepartment;
 	}
-	public void setaRrankDepartment(int aRrankDepartment) {
-		this.aRrankDepartment = aRrankDepartment;
+	public void setaRankDepartment(int aRankDepartment) {
+		this.aRankDepartment = aRankDepartment;
 	}
 	public int getaRankAll() {
 		return aRankAll;

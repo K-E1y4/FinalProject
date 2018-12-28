@@ -15,32 +15,32 @@
 													  <b>タスクID:</b>&nbsp;
 													  <input class="form-control mr-sm-2" type="text" name="task_id" list="task_id_Data" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
 													 <datalist id="task_id_Data" >
-															<option th:each="task:${tasks}"  th:value="${task.task_id}" th:selected="${task.task_id == session.task_id}">[[${task.task_name}]]</option>
+															<option th:each="task:${tasks}"  th:value="${task.task_id}" th:selected="${task.task_id == session.taskManagementSearch.task_id}">[[${task.task_name}]]</option>
 													 </datalist>
 									  				  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									  				  <b>タスク内訳ＩＤ:</b>&nbsp;
 													  <input class="form-control mr-sm-2" type="text" name="task_detail_id" list="task_detail_id_Data" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
 													 <datalist id="task_detail_id_Data" >
-															<option th:each="taskDetail:${taskDetails}"  th:value="${taskDetail.task_detail_id}" th:selected="${taskDetail.task_detail_id == session.task_detail_id}">[[${taskDetail.task_detail_name}]]</option>
+															<option th:each="taskDetail:${taskDetails}"  th:value="${taskDetail.task_detail_id}" th:selected="${taskDetail.task_detail_id == session.taskManagementSearch.task_detail_id}">[[${taskDetail.task_detail_name}]]</option>
 													 </datalist>
 													  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									  				<b>担当者:</b>&nbsp;
 									  				<input class="form-control mr-sm-2" type="text" name="employee_id" list="employee_id_Data" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
 													 <datalist id="employee_id_Data" >
-															<option th:each="employee:${employees}"  th:value="${employee.employee_id}" th:selected="${employee.employee_id == session.employee_id}">[[${employee.employee_name}]]</option>
+															<option th:each="employee:${employees}"  th:value="${employee.employee_id}" th:selected="${employee.employee_id == session.taskManagementSearch.employee_id}">[[${employee.employee_name}]]</option>
 													 </datalist>
 									  				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 													<br><br>
 													 <b>締切日:</b>&nbsp;
-													  <input class="form-control mr-sm-2" type="date" name="due_date_from" th:value="${session.due_date_from}"  style="width: 15rem;">
+													  <input class="form-control mr-sm-2" type="date" name="due_date_from" th:value="${session.taskManagementSearch.due_date_from}"  style="width: 15rem;">
 									  				   ~ 
-									  				   <input class="form-control mr-sm-2" type="date" name="due_date_to"  th:value="${session.due_date_to}"  style="width: 15rem;">
+									  				   <input class="form-control mr-sm-2" type="date" name="due_date_to"  th:value="${session.taskManagementSearch.due_date_to}"  style="width: 15rem;">
 									  				  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									  				 <b>状態:</b>&nbsp;
 									  				 <select class="form-control" name="end_flg" >
 														  <option th:value="全て">全て</option>
-														  <option th:value="未完了" th:selected="'未完了' == ${session.end_flg}">未完了</option>
-														  <option th:value="完了" th:selected="'完了' == ${session.end_flg}">完了</option>
+														  <option th:value="未完了" th:selected="'未完了' == ${session.taskManagementSearch.end_flg}">未完了</option>
+														  <option th:value="完了" th:selected="'完了' == ${session.taskManagementSearch.end_flg}">完了</option>
 													 </select>
 									 				 <button class="btn btn-primary pull-right" type="submit">検索</button>
 											</form>	

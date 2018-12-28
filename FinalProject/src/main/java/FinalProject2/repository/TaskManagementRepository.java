@@ -64,22 +64,34 @@ public interface TaskManagementRepository extends JpaRepository<TaskManagement, 
 			+ "LEFT JOIN Employee emplo ON manage.employee_id = emplo.employee_id")
 	List<Employee> getTantousya();
 	
-	@Query("Select manage from TaskManagement manage "
+	String search = "Select manage from TaskManagement manage "
 			+ "LEFT JOIN TaskDetail detail On manage.task_detail_id = detail.task_detail_id "
 			+ "LEFT JOIN Task task On detail.task_id = task.task_id "
 			+ "WHERE task.task_id LIKE %:task_id% AND "
 			+ "detail.task_detail_id LIKE %:taskDetail_id% AND "
 			+ "manage.employee_id LIKE %:employee_id% AND "
-			+ "task.due_date BETWEEN :due_date_from AND :due_date_to AND "
-		    + "(task.end_flg = :end_flg_A OR task.end_flg = :end_flg_B)")
-	Page<TaskManagement> findBySearch(String task_id, String taskDetail_id, String employee_id, LocalDate due_date_from,
-			LocalDate due_date_to, Boolean end_flg_A, Boolean end_flg_B, Pageable pageable);
+			+ "manage.due_date BETWEEN :due_date_from AND :due_date_to";
+	
+	@Query(search)
+	Page<TaskManagement> findBySearch(String task_id, String taskDetail_id, String employee_id, LocalDate due_date_from, LocalDate due_date_to, Pageable pageable);
+	
+	@Query(search + " and manage.end_date IS NULL")
+	Page<TaskManagement> findBySearchNotEndTask(String task_id, String taskDetail_id, String employee_id, LocalDate due_date_from, LocalDate due_date_to, Pageable pageable);
+	
+	@Query(search + " and manage.end_date IS not NULL")
+	Page<TaskManagement> findBySearchEndTask(String task_id, String taskDetail_id, String employee_id, LocalDate due_date_from, LocalDate due_date_to, Pageable pageable);
 	
 	@Query("SELECT SUM(t.point) FROM TaskManagement t WHERE YEAR(t.end_date) = YEAR(GETDATE()) and MONTH(t.end_date) = MONTH(GETDATE())")
 	List<Long> getRankAll();
 
 	@Query("SELECT SUM(t.point) FROM TaskManagement t WHERE YEAR(t.end_date) = YEAR(GETDATE()) and MONTH(t.end_date) = MONTH(GETDATE()) and employee_id IN :emp")
 	List<Long> getRankDepartment(List<String> emp);
+
+	@Query("SELECT MAX(t.due_date) FROM TaskManagement t")
+	LocalDate getMaxDueDate();
+
+	@Query("SELECT MIN(t.due_date) FROM TaskManagement t")
+	LocalDate getMinDueDate();
 
 }
 

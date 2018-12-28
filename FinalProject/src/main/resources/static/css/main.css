@@ -14,10 +14,6 @@ form input:focus:invalid {
 form input:focus:valid + .error .invalid {
   display : none;
 }
-/* OKなら、その他のテキストボックス以外を緑にする */
-form input:valid:not(:last-child) {
-  border : seagreen 2px solid;
-}
 .mfp-close {
   margin-right:15px;
 }

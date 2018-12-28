@@ -1,7 +1,5 @@
 package FinalProject2.controller;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -15,13 +13,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import FinalProject2.model.AnalysisDepartment;
 import FinalProject2.model.AnalysisEmployee;
 import FinalProject2.model.AnalysisForm;
 import FinalProject2.model.Department;
-import FinalProject2.model.testE;
 import FinalProject2.pagination.PagenationHelper;
 import FinalProject2.service.DepartmentService;
 import FinalProject2.service.TaskMonthlyResultService;
