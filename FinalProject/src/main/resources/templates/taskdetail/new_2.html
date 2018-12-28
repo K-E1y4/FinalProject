@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<div th:include="include/head"></div>
+</head>
+<head>
+<title>新規タスク内訳登録</title>
+</head>
+	<body>
+ 			<div th:include="include/header"></div>
+ 			<div class="container col-md-8 col-md-offset-2">
+  	  				<div class="panel panel-primary">
+	    					<div class="panel-heading">
+	 	  							<h2 class="panel-title">タスク内訳情報　新規作成フォーム</h2>
+	    					</div>
+	    					<div class="panel-body">
+		  							<form id="taskDetailNewForm" name="taskDetailNewForm" th:method="post"  th:action="@{/taskDetail/JumpTaskShow}"  th:object="${newTaskDetail}">
+		  									<div class="form-group col-xs-7">
+			  										<label>タスク内訳ID</label>
+ 	  		  										<input id="task_detail_id"  class="form-control"  th:value="${NewTaskDetailId}" name="task_detail_id"  readonly>
+ 		  									</div>
+		    								<div class="form-group col-xs-7">
+			  										<label>タスクID</label>
+			  										<input class="form-control mr-sm-2" th:value="${task_id}" name="task_id" type="text" id="task_id" readonly>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+									 				<label>タスク内訳名</label>
+									 	  			<input class="form-control mr-sm-2" name="task_detail_name" type="text" id="task_detail_name" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off" required>
+											</div>
+											<div class="form-group col-xs-7">
+									 				<label>タスク内訳区分</label>
+									 	  			<input class="form-control mr-sm-2" name="task_division_id" type="text" id="task_division_id"  list="task_division_id_Data"  placeholder="テキスト入力もしくはダブルクリック" autocomplete="off" required>
+													 <datalist id="task_division_id_Data">
+															<option th:each="taskDivision:${taskDivisions}"  th:value="${taskDivision.task_division_id}">[[${taskDivision.task_division_name}]]</option>
+													 </datalist>
+											</div>
+											<div class="form-group col-xs-7">
+			  										<label>締切日</label>
+ 	  		  										<input id="due_date" class="form-control" name="due_date" type="date" required>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+			  										<label>備考</label>
+ 	  		  										<textarea id="detail" class="form-control" name="detail"></textarea>
+ 		  									</div>
+ 		  									<input type="hidden" name="make_user" th:value="${make_user}">
+ 		  									<input type="hidden" name="make_date" th:value="${make_date}">
+ 		  									<input type="hidden" name="update_date" th:value="${update_date}">
+ 		  									<input type="hidden" name="update_user" th:value="${update_user}">
+ 		  									<input type="hidden" name="end_flg" th:value="${end_flg}">
+										    <div class="col-xs-4 col-xs-offset-4">
+										  			<button class="btn btn-primary col-xs-12 center-block" id="popup_btn">送信</button>
+											</div>
+	 	  							</form>
+ 	    					</div>
+ 	  				</div>
+			</div>
+			<div id="pass-popup" class="mfp-hide col-md-6 col-md-offset-3">
+					<div class="panel panel-default">
+	  						<div class="panel-heading">
+									<b class="panel-title">登録情報の確認</b>
+	  						</div>
+	  						<div class="panel-body">
+									<div>
+		  									<div class="form-group">
+													<label>タスクID</label>
+													<span id="task_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>タスク名</label>
+													<span id="task_name_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>タスク種別</label>
+													<span id="task_division_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>予算</label>
+													<span id="budget_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>責任者</label>
+													<span id="employee_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>締切日</label>
+													<span id="due_date_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>備考</label>
+													<span id="detail_pop"></span>
+		  									</div>
+		    								<button class="btn" id="popupSubmit">登録</button>
+									</div>
+	  						</div>
+					</div>
+  			</div>
+			<script>
+					$(function(){
+
+							$('#popup_btn').click(function() {
+								
+								$("#taskNewForm").submit( function(e) {
+									
+									$("#task_id_pop").html($("#task_id").val());
+									$("#task_name_pop").html($("#task_name").val());
+									console.log($('#tasksyubetsu option'));
+									console.log($('#tasksyubetsu option:selected'));
+									console.log($('#tasksyubetsu option').val());
+								
+									var task_division_id = $('#task_division_id').val();
+									var task_division_id_text = "";
+									$('#tasksyubetsu option').each(function(){
+										let target =$(this).attr("value");
+										if( target == task_division_id ) task_division_id_text = $(this).text();
+									});
+									$("#task_division_id_pop").html(task_division_id_text);
+									
+									$("#budget_pop").html($("#budget").val());
+									
+									var employee_id = $('#employee_id').val();
+									var employee_id_text = "";
+									$('#sekininsya option').each(function(){
+										let target =$(this).attr("value");
+										if( target == employee_id ) employee_id_text = $(this).text();
+									});
+									$("#employee_id_pop").html(employee_id_text);
+									
+									$("#due_date_pop").html($("#due_date").val());
+									$("#detail_pop").html($("#detail").val());
+									
+							    	$.magnificPopup.open({
+							    		  items: {
+							    		    src: '#pass-popup'
+							    		  },
+							    		  type: 'inline'
+							    	});
+									return false;
+							});
+							
+							$('#popupSubmit').click(function() {
+								document.taskNewForm.submit();
+							});
+
+							});
+					});
+			</script>
+ 	</body>
+ </html>

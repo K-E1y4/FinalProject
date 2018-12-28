@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<div th:include="include/head"></div>
+</head>
+<head>
+<title>タスク内訳情報編集</title>
+</head>
+	<body>
+ 			<div th:include="include/header"></div>
+ 			<div class="container col-md-8 col-md-offset-2">
+  	  				<div class="panel panel-primary">
+	    					<div class="panel-heading">
+	 	  							<h2 class="panel-title">タスク内訳情報　編集フォーム</h2>
+	    					</div>
+	    					<div class="panel-body">
+	    							<form th:action="@{/taskDetail/{task_detail_id}/delete(task_detail_id=${taskDetail.task_detail_id})}" th:method="delete">
+	    								<button id="taskDeleteBtn" class="btn btn-danger btn-sm pull-right" >削除</button>	
+	    							</form>
+		  							<form id="taskEditForm"  name="taskEditForm" th:method="post"  th:action="@{/taskDetail/{task_detail_id}/edit(task_detail_id=${taskDetail.task_detail_id})}" th:object="${taskDetail}">
+		  									<div class="form-group col-xs-7">
+			  										<label>タスク内訳ID</label>
+ 	  		  										<input id="task_detail_id"  class="form-control"  th:value="*{task_detail_id}" name="task_detail_id"  readonly>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+									 				<label>タスクID</label>
+									 	  			<input class="form-control mr-sm-2" th:value="*{task_id}" name="task_id" type="text" id="task_id"  list="task_id_Data"  placeholder="テキスト入力もしくはダブルクリック" autocomplete="off" required>
+													 <datalist id="task_id_Data" >
+															<option th:each="task:${session.tasks}"  th:value="${task.task_id}" th:selected="${task.task_id}== *{task_id}">[[${task.task_name}]]</option>
+													 </datalist>
+											</div>
+		    								<div class="form-group col-xs-7">
+			  										<label>タスク内訳名</label>
+ 	  		  										<input id="task_detail_name" class="form-control" name="task_detail_name"  th:value="*{task_detail_name}" type="text" required>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+									 				<label>タスク内訳区分</label>
+									 	  			<input class="form-control mr-sm-2" th:value="*{task_division_id}" name="task_division_id" type="text" id="task_division_id"  list="tasksyubetsu"  placeholder="テキスト入力もしくはダブルクリック" autocomplete="off" required>
+													 <datalist id="tasksyubetsu">
+															<option th:each="taskDivision:${taskDivisions}" th:value="${taskDivision.task_division_id}" th:selected="${taskDivision.task_division_id} == *{task_division_id}">[[${taskDivision.task_division_name}]]</option>
+													 </datalist>
+											</div>
+											<div class="form-group col-xs-7">
+			  										<label>締切日</label>
+ 	  		  										<input id="due_date" class="form-control" th:value="*{due_date}" name="due_date" type="date" required>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+			  										<label>備考</label>
+ 	  		  										<textarea id="detail" class="form-control" th:value="*{detail}" name="detail">[[*{detail}]]</textarea>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+			  										<label>状態</label>
+ 	  		  										<select class="form-control" name="end_flg" id="end_flg">
+														  <option th:value="true" th:selected="true== ${taskDetail.end_flg}">完了</option>
+														  <option th:value="false" th:selected="false == ${taskDetail.end_flg}">未完了</option>
+													 </select>
+ 		  									</div>
+ 		  									<div class="col-xs-4 col-xs-offset-4">
+ 		  											<input type="hidden" name="make_date" th:value="*{make_date}">
+ 		  											<input type="hidden" name="make_user" th:value="*{make_user}">
+ 		  											<input type="hidden" name="update_date" th:value="${update_date}">
+ 		  											<input type="hidden" name="update_user" th:value="${update_user}">
+ 		  											<button class="btn btn-primary col-xs-12 center-block" id="popup_btn">送信</button>
+ 		  									</div>
+ 		  							</form>
+ 		  					</div>
+ 		  			</div>
+			</div>
+			<div id="pass-popup" class="mfp-hide col-md-6 col-md-offset-3">
+					<div class="panel panel-default">
+	  						<div class="panel-heading">
+									<b class="panel-title">編集情報の確認</b>
+	  						</div>
+	  						<div class="panel-body">
+									<div>
+		  									<div class="form-group">
+													<label>タスク内訳ID</label>
+													<span id="task_detail_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>タスクID</label>
+													<span id="task_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>タスク内訳区分</label>
+													<span id="task_division_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>締切日</label>
+													<span id="due_date_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>備考</label>
+													<span id="detail_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>状態</label>
+													<span id="end_flg_pop"></span>
+		  									</div>
+		    								<button class="btn" id="popupSubmit">登録</button>
+									</div>
+	  						</div>
+					</div>
+  			</div>
+			<script>
+					$(function(){
+						
+							$("#taskDeleteBtn").on('click',function(){
+								if(!confirm('本当に削除しますか？削除を実行すると、関連するタスクマネジメントも一緒に削除されます。')){
+							        /* キャンセルの時の処理 */
+							        return false;
+							    }else{
+							        /*　OKの時の処理 */
+							       return true;
+							    }
+							});
+
+							$('#popup_btn').click(function() {
+								
+								$("#taskEditForm").submit( function(e) {
+									
+									$("#task_detail_id_pop").html($("#task_detail_id").val());
+									$("#task_detail_name_pop").html($("#task_detail_name").val());
+								
+									var task_id = $('#task_id').val();
+									var task_id_text = "";
+									$('#task_id_Data option').each(function(){
+										let target =$(this).attr("value");
+										if( target == task_id ) task_id_text = $(this).text();
+									});
+									$("#task_id_pop").html(task_id_text);
+									
+									var task_division_id = $('#task_division_id').val();
+									var task_division_id_text = "";
+									$('#tasksyubetsu option').each(function(){
+										let target =$(this).attr("value");
+										if( target == task_division_id ) task_division_id_text = $(this).text();
+									});
+									$("#task_division_id_pop").html(task_division_id_text);
+									
+									$("#due_date_pop").html($("#due_date").val());
+									
+									$("#detail_pop").html($("#detail").val());
+									
+									$("#end_flg_pop").html($("#end_flg option:selected").text());
+									
+							    	$.magnificPopup.open({
+							    		  items: {
+							    		    src: '#pass-popup'
+							    		  },
+							    		  type: 'inline'
+							    	});
+									return false;
+							});
+							
+							$('#popupSubmit').click(function() {
+								document.taskEditForm.submit();
+							});
+
+							});
+					});
+			</script>
+ 	</body>
+ </html>

@@ -348,6 +348,21 @@ public class EmployeeService {
 		return yearList;
 	}
 
+	public List<Employee> findActiveEmployees() {
+		
+		List<Employee> ActiveEmployees = repository.findActiveEmployee();
+		return ActiveEmployees;
+	}
+
+	public Employee findById(String employee_id) {
+		Optional<Employee> employee_check = repository.findById(employee_id);
+		Employee employee = null;
+		if(employee_check.isPresent()) {
+			employee = employee_check.get();
+		}
+		return employee;
+	}
+	
 	public List<Employee> getActiveEmployeeList() {
 		return repository.getActiveEmployeeList();
 	}

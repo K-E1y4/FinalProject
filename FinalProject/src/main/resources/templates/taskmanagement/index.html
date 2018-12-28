@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include/head">
+</head>
+<head>
+<title>タスクマネジメント一覧</title>
+</head>
+	<body>
+ 		<div th:include="include/header"></div>
+		    		<div class="container" >
+							<div class="panel panel-primary" style="width: 100rem;">
+			   						<div class="panel-heading"><b>検索</b></div>
+			   						<div class="panel-body">
+							    			<form class="form-inline mr-auto"  th:action="@{/taskManagement/taskManagementSearch}"  th:method="post"  th:object="${taskManagementSearch}">
+													  <b>タスクID:</b>&nbsp;
+													  <input class="form-control mr-sm-2" type="text" name="task_id" list="task_id_Data" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
+													 <datalist id="task_id_Data" >
+															<option th:each="task:${tasks}"  th:value="${task.task_id}" th:selected="${task.task_id == session.task_id}">[[${task.task_name}]]</option>
+													 </datalist>
+									  				  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									  				  <b>タスク内訳ＩＤ:</b>&nbsp;
+													  <input class="form-control mr-sm-2" type="text" name="task_detail_id" list="task_detail_id_Data" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
+													 <datalist id="task_detail_id_Data" >
+															<option th:each="taskDetail:${taskDetails}"  th:value="${taskDetail.task_detail_id}" th:selected="${taskDetail.task_detail_id == session.task_detail_id}">[[${taskDetail.task_detail_name}]]</option>
+													 </datalist>
+													  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									  				<b>担当者:</b>&nbsp;
+									  				<input class="form-control mr-sm-2" type="text" name="employee_id" list="employee_id_Data" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
+													 <datalist id="employee_id_Data" >
+															<option th:each="employee:${employees}"  th:value="${employee.employee_id}" th:selected="${employee.employee_id == session.employee_id}">[[${employee.employee_name}]]</option>
+													 </datalist>
+									  				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<br><br>
+													 <b>締切日:</b>&nbsp;
+													  <input class="form-control mr-sm-2" type="date" name="due_date_from" th:value="${session.due_date_from}"  style="width: 15rem;">
+									  				   ~ 
+									  				   <input class="form-control mr-sm-2" type="date" name="due_date_to"  th:value="${session.due_date_to}"  style="width: 15rem;">
+									  				  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									  				 <b>状態:</b>&nbsp;
+									  				 <select class="form-control" name="end_flg" >
+														  <option th:value="全て">全て</option>
+														  <option th:value="未完了" th:selected="'未完了' == ${session.end_flg}">未完了</option>
+														  <option th:value="完了" th:selected="'完了' == ${session.end_flg}">完了</option>
+													 </select>
+									 				 <button class="btn btn-primary pull-right" type="submit">検索</button>
+											</form>	
+			  						</div>
+							</div>
+		      				<h3>タスクマネジメント一覧　<a class="btn btn-primary pull-right" href="/FinalProject2/taskManagement/new">新規作成</a></h3>
+		      				<table class="table table-hover table-sm table-bordered">
+		        					<thead>
+		          							<tr>
+										            <th class="col-md-1">タスクID</th>
+										            <th class="col-md-2">タスク名</th>
+										            <th class="col-md-2">タスク内訳名</th>
+										            <th class="col-md-1">担当者</th>
+										            <th class="col-md-1">ポイント</th>
+										            <th class="col-md-1">締切日</th>
+										            <th class="col-md-1"></th>
+		          							</tr>
+		        					</thead>
+		        					<tbody>
+		          							<tr th:each="taskManagement:${taskManagement_page}" >
+										            <td th:text="${taskManagement.taskDetail.task.task_id}"></td>
+										            <td th:text="${taskManagement.taskDetail.task.task_name}"></td>
+										            <td th:text="${taskManagement.taskDetail.task_detail_name}"></td>
+										            <td th:text="${taskManagement.employee.employee_name}"></td>
+										            <td th:text="${taskManagement.point}"></td>
+										            <td th:text="${#temporals.format(taskManagement.due_date, 'yyyy年MM月dd日')}"></td>
+		            								<td>        
+										            		<a class="btn btn-primary btn-xs" th:href="@{/taskManagement/{task_management_id}(task_management_id=${taskManagement.task_management_id})}">詳細</a>
+		            								</td>
+		          							 </tr>
+		        					</tbody>
+		      				</table>
+		      				<form th:action="@{/taskManagement/pagenate}" th:object="${page}" method="get">
+				    				<div class="float-right">
+				      						<div>
+				        							<span th:text="${page.number+1}"></span>
+				    								<span>/</span>
+				    								<span th:text="${page.totalPages}"></span>
+				    								<span>頁を表示</span>
+				      						</div>
+				      						<div th:fragment='paginationbar' style="float: right;">
+				        							<ul class="pagination">
+				          									<li class="page-item">
+				              										<span th:if="${page.first}">←先頭</span>
+				            										<a th:if="${not page.first}" th:href="@{/taskManagement/page={page}(page=${0})}">←先頭</a>
+				          									</li>
+				          									<li class="page-item" th:each='i : ${#numbers.sequence(0, page.totalPages-1)}'>
+				            										<span th:if='${i}==${page.number}' th:text='${i+1}'>1</span>
+				            										<a th:if='${i}!=${page.number}' th:href="@{/taskManagement/page={page}(page=${i})}" class="page-link">
+				                											<span th:text='${i+1}'>1</span>
+				            										</a>
+				          									</li>
+				          									<li class="page-item">
+				            										<span th:if="${page.last}">末尾➝</span>
+				            										<a th:if="${not page.last}" th:href="@{/taskManagement/page={page}(page=(${page.totalPages}-1))}">末尾➝</a>           
+				            								</li>
+				        							</ul>
+				       						</div>
+				     				</div>
+				   			</form>
+				   	</div>
+				   	<script>
+				   			$('#taskId_from').blur(function(){
+				   				if($('#taskId_from').val() == ''){
+				   					$('#taskId_from').val(0);
+				   				}
+				   			});
+				   			
+				   			$('#taskId_to').blur(function(){
+				   				if($('#taskId_to').val() == ''){
+				   					$('#taskId_to').val(0);
+				   				}
+				   			});
+				   			
+				   			$('#budget_from').blur(function(){
+				   				if($('#budget_from').val() == ''){
+				   					$('#budget_from').val(0);
+				   				}
+				   			});
+				   			
+				   			$('#budget_to').blur(function(){
+				   				if($('#budget_to').val() == ''){
+				   					$('#budget_to').val(0);
+				   				}
+				   			});
+				   	</script>
+		</body>
+</html>
+
+
+

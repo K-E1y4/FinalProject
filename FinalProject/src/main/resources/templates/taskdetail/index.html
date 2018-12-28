@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head th:include="include/head">
+</head>
+<head>
+<title>タスク内訳一覧</title>
+</head>
+	<body>
+ 		<div th:include="include/header"></div>
+		    		<div class="container" >
+							<div class="panel panel-primary" style="width: 100rem;">
+			   						<div class="panel-heading"><b>検索</b></div>
+			   						<div class="panel-body">
+							    			<form class="form-inline mr-auto"  th:action="@{/taskDetail/taskDetailSearch}"  th:method="post"  th:object="${taskDetailSearch}">
+													  <b>タスクID:</b>&nbsp;&nbsp;
+									  				<input class="form-control mr-sm-2" type="text"  th:value="${session.task_id}" name="task_id" list="taskID" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
+													 <datalist id="taskID" >
+															<option th:each="task:${session.tasks}"  th:value="${task.task_id}" th:selected="${task.task_id == session.task_id}">[[${task.task_name}]]</option>
+													 </datalist>
+									  				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									  				 <b>タスク内訳ID:</b>&nbsp;&nbsp;
+									  				 <input class="form-control mr-sm-2" type="text" th:value="${session.task_detail_id}" name="task_detail_id" list="taskDetailID" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
+													 <datalist id="taskDetailID" >
+															<option th:each="taskDetail:${session.taskDetails}"  th:value="${taskDetail.task_detail_id}" th:selected="${taskDetail.task_detail_id == session.task_detail_id}">[[${taskDetail.task_detail_name}]]</option>
+													 </datalist>
+									  				  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									  				  <b>責任者:</b>&nbsp;&nbsp;
+									  				<input class="form-control mr-sm-2" type="text" th:value="${session.sekininsya}" name="sekininsya" list="sekininsya" placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
+													 <datalist id="sekininsya" >
+															<option th:each="employee:${session.employees}"  th:value="${employee.employee_id}" th:selected="${employee.employee_id == session.sekininsya}">[[${employee.employee_name}]]</option>
+													 </datalist>
+									  				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									  				 <br><br>
+									  				  <b>締切日:</b>&nbsp;&nbsp;
+													  <input class="form-control mr-sm-2" type="date" name="due_date_from" th:value="${session.due_date_from}"  style="width: 15rem;">
+									  				   ~ 
+									  				   <input class="form-control mr-sm-2" type="date" name="due_date_to"  th:value="${session.due_date_to}"  style="width: 15rem;">
+									  				  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									  				  <b>作成日:</b>&nbsp;&nbsp;
+													  <input class="form-control mr-sm-2" type="date" name="make_date_from" th:value="${session.make_date_from}" style="width: 15rem;">
+									  				   ~ 
+									  				   <input class="form-control mr-sm-2" type="date" name="make_date_to"  th:value="${session.make_date_to}" style="width: 15rem;">
+									  				 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									  				  <b>状態:</b>&nbsp;&nbsp;
+									  				 <select class="form-control" name="end_flg" >
+														  <option th:value="全て">全て</option>
+														  <option th:value="未完了" th:selected="'未完了' == ${session.end_flg}">未完了</option>
+														  <option th:value="完了" th:selected="'完了' == ${session.end_flg}">完了</option>
+													 </select>
+													 <br><br>	 
+									 				 <button class="btn btn-primary pull-right" type="submit">検索</button>
+											</form>	
+			  						</div>
+							</div>
+		      				<h3>タスク内訳一覧　<a class="btn btn-primary pull-right" href="/FinalProject2/taskDetail/new">新規作成</a></h3>
+		      				<table class="table table-hover table-sm table-bordered">
+		        					<thead>
+		          							<tr>
+										            <th class="col-md-1">タスクID</th>
+										            <th class="col-md-2">タスク名</th>
+										            <th class="col-md-2">タスク内訳名</th>
+										            <th class="col-md-1">責任者</th>
+										            <th class="col-md-1">締切日</th>
+										            <th class="col-md-1">作成日</th>
+										            <th class="col-md-1"></th>
+		          							</tr>
+		        					</thead>
+		        					<tbody>
+		          							<tr th:each="taskDetail:${taskDetail_page}" >
+										            <td th:text="${taskDetail.task_id}"></td>
+										            <td th:text="${taskDetail.task.task_name}"></td>
+										            <td th:text="${taskDetail.task_detail_name}"></td>
+										            <td th:text="${taskDetail.task.employee.employee_name}"></td>
+										            <td th:text="${#temporals.format(taskDetail.due_date, 'yyyy年MM月dd日')}"></td>
+										            <td th:text="${#dates.format(taskDetail.make_date, 'yyyy年MM月dd日')}"></td>
+		            								<td>        
+										            		<a class="btn btn-primary btn-xs" th:href="@{/taskDetail/{task_detail_id}(task_detail_id=${taskDetail.task_detail_id})}">詳細</a>
+		            								</td>
+		          							 </tr>
+		        					</tbody>
+		      				</table>
+		      				<form th:action="@{/taskDetail/pagenate}" th:object="${page}" method="get">
+				    				<div class="float-right">
+				      						<div>
+				        							<span th:text="${page.number+1}"></span>
+				    								<span>/</span>
+				    								<span th:text="${page.totalPages}"></span>
+				    								<span>頁を表示</span>
+				      						</div>
+				      						<div th:fragment='paginationbar' style="float: right;">
+				        							<ul class="pagination">
+				          									<li class="page-item">
+				              										<span th:if="${page.first}">←先頭</span>
+				            										<a th:if="${not page.first}" th:href="@{/taskDetail/page={page}(page=${0})}">←先頭</a>
+				          									</li>
+				          									<li class="page-item" th:each='i : ${#numbers.sequence(0, page.totalPages-1)}'>
+				            										<span th:if='${i}==${page.number}' th:text='${i+1}'>1</span>
+				            										<a th:if='${i}!=${page.number}' th:href="@{/taskDetail/page={page}(page=${i})}" class="page-link">
+				                											<span th:text='${i+1}'>1</span>
+				            										</a>
+				          									</li>
+				          									<li class="page-item">
+				            										<span th:if="${page.last}">末尾➝</span>
+				            										<a th:if="${not page.last}" th:href="@{/taskDetail/page={page}(page=(${page.totalPages}-1))}">末尾➝</a>           
+				            								</li>
+				        							</ul>
+				       						</div>
+				     				</div>
+				   			</form>
+				   	</div>
+				   	<script>
+				   			
+				   	</script>
+		</body>
+</html>
+
+
+

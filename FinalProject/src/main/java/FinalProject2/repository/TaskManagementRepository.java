@@ -1,11 +1,16 @@
 package FinalProject2.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import FinalProject2.model.Employee;
 import FinalProject2.model.TaskManagement;
 
 
@@ -44,7 +49,32 @@ public interface TaskManagementRepository extends JpaRepository<TaskManagement, 
 
 	@Query("SELECT SUM(t.point) FROM TaskManagement t where t.employee_id = :employeeId and t.end_date IS NULL and YEAR(t.due_date) = YEAR(GETDATE()) and MONTH(t.due_date) = MONTH(GETDATE()) GROUP BY t.point")
 	int willGetPoint(String employeeId);
-
+	
+	@Query("SELECT t FROM TaskManagement t where t.task_detail_id = :task_detail_id")
+	List<TaskManagement> findByTaskId(String task_detail_id);
+	
+	@Modifying
+	@Query("Delete from TaskManagement m Where m.task_detail_id = :task_detail_id")
+	void deleteByTaskDetailId(String task_detail_id);
+	
+	@Query("select Max(m.task_management_id) from TaskManagement m ")
+	int getMaxID();
+	
+	@Query("Select distinct emplo from TaskManagement manage "
+			+ "LEFT JOIN Employee emplo ON manage.employee_id = emplo.employee_id")
+	List<Employee> getTantousya();
+	
+	@Query("Select manage from TaskManagement manage "
+			+ "LEFT JOIN TaskDetail detail On manage.task_detail_id = detail.task_detail_id "
+			+ "LEFT JOIN Task task On detail.task_id = task.task_id "
+			+ "WHERE task.task_id LIKE %:task_id% AND "
+			+ "detail.task_detail_id LIKE %:taskDetail_id% AND "
+			+ "manage.employee_id LIKE %:employee_id% AND "
+			+ "task.due_date BETWEEN :due_date_from AND :due_date_to AND "
+		    + "(task.end_flg = :end_flg_A OR task.end_flg = :end_flg_B)")
+	Page<TaskManagement> findBySearch(String task_id, String taskDetail_id, String employee_id, LocalDate due_date_from,
+			LocalDate due_date_to, Boolean end_flg_A, Boolean end_flg_B, Pageable pageable);
+	
 	@Query("SELECT SUM(t.point) FROM TaskManagement t WHERE YEAR(t.end_date) = YEAR(GETDATE()) and MONTH(t.end_date) = MONTH(GETDATE())")
 	List<Long> getRankAll();
 
@@ -52,3 +82,5 @@ public interface TaskManagementRepository extends JpaRepository<TaskManagement, 
 	List<Long> getRankDepartment(List<String> emp);
 
 }
+
+
