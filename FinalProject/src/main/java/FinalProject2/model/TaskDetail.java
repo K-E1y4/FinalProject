@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name="tbl_task_detail")
 public class TaskDetail implements Serializable {
@@ -25,7 +27,7 @@ public class TaskDetail implements Serializable {
 	@NotNull
 	private String task_detail_name;
 	
-	@Column(name = "task_division_id")
+	@Column(name = "task_division_id", insertable = false, updatable = false)
 	@NotNull
 	private int task_division_id;
 	
@@ -34,6 +36,7 @@ public class TaskDetail implements Serializable {
 	private String detail;
 	
 	@Column(name = "due_date")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull
 	private LocalDate due_date;
 	
@@ -63,6 +66,10 @@ public class TaskDetail implements Serializable {
 	
 	@OneToMany(mappedBy="taskDetail")
 	private List<TaskManagement> taskManagementList;
+	
+	@ManyToOne
+	@JoinColumn(name="task_division_id")
+	private TaskDivision taskDivision;
 
 	public String getTask_detail_id() {
 		return task_detail_id;
@@ -167,5 +174,15 @@ public class TaskDetail implements Serializable {
 	public void setTaskManagementList(List<TaskManagement> taskManagementList) {
 		this.taskManagementList = taskManagementList;
 	}
+
+	public TaskDivision getTaskDivision() {
+		return taskDivision;
+	}
+
+	public void setTaskDivision(TaskDivision taskDivision) {
+		this.taskDivision = taskDivision;
+	}
+	
+	
 
 }

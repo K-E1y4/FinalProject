@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<div th:include="include/head"></div>
+</head>
+<head>
+<title>新規タスクマネジメント登録</title>
+</head>
+	<body>
+ 			<div th:include="include/header"></div>
+ 			<div class="container col-md-8 col-md-offset-2">
+  	  				<div class="panel panel-primary">
+	    					<div class="panel-heading">
+	 	  							<h2 class="panel-title">タスクマネジメント情報　新規作成フォーム</h2>
+	    					</div>
+	    					<div class="panel-body">
+		  							<form id="taskManagementNewForm" name="taskManagementNewForm" th:method="post"  th:action="@{/taskManagement}"  th:object="${taskManagement}">
+		  									<div class="form-group col-xs-7">
+			  										<label>タスクマネジメントID</label>
+ 	  		  										<input id="task_management_id"  class="form-control"  th:value="${NewTaskManagementId}" name="task_management_id"  readonly>
+ 		  									</div>
+		    								<div class="form-group col-xs-7">
+			  										<label>タスク内訳ID</label>
+			  										<input id="task_detail_id"  class="form-control"  th:value="${task_detail_id}" name="task_detail_id"  readonly>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+									 				<label>従業員ID</label>
+									 				<input class="form-control mr-sm-2" name="employee_id" type="text" id="employee_id"  list="employee_id_Data"  placeholder="テキスト入力もしくはダブルクリック" autocomplete="off" required>
+													 <datalist id="employee_id_Data">
+															<option th:each="employee:${employees}"  th:value="${employee.employee_id}">[[${employee.employee_name}]]</option>
+													 </datalist>
+											</div>
+											<div class="form-group col-xs-7">
+									 				<label>ポイント</label>
+									 	  			<input id="point" class="form-control" name="point" type="number"  step="100"  min="0" required>
+											</div>
+											<div class="form-group col-xs-7">
+			  										<label>メンターID</label>
+			  										<input class="form-control mr-sm-2" name="mentor_id" type="text" id="mentor_id"  list="mentor_id_Data"  placeholder="テキスト入力もしくはダブルクリック" autocomplete="off">
+													 <datalist id="mentor_id_Data">
+															<option th:each="employee:${employees}"  th:value="${employee.employee_id}">[[${employee.employee_name}]]</option>
+													 </datalist>
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+			  										<label>締切日</label>
+ 	  		  										<input type="date" id="due_date" class="form-control" name="due_date">
+ 		  									</div>
+ 		  									<div class="form-group col-xs-7">
+			  										<label>開始日</label>
+ 	  		  										<input type="date" id="start_date" class="form-control" name="start_date">
+ 		  									</div>
+ 		  									<input type="hidden" name="make_user" th:value="${make_user}">
+ 		  									<input type="hidden" name="make_date" th:value="${make_date}">
+ 		  									<input type="hidden" name="update_date" th:value="${update_date}">
+ 		  									<input type="hidden" name="update_user" th:value="${update_user}">
+ 		  									<input type="hidden" name="end_flg" th:value="${end_flg}">
+										    <div class="col-xs-4 col-xs-offset-4">
+										  			<button class="btn btn-primary col-xs-12 center-block" id="popup_btn">送信</button>
+											</div>
+	 	  							</form>
+ 	    					</div>
+ 	  				</div>
+			</div>
+			<div id="pass-popup" class="mfp-hide col-md-6 col-md-offset-3">
+					<div class="panel panel-default">
+	  						<div class="panel-heading">
+									<b class="panel-title">登録情報の確認</b>
+	  						</div>
+	  						<div class="panel-body">
+									<div>
+		  									<div class="form-group">
+													<label>タスクマネジメントID</label>
+													<span id="task_management_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>タスク内訳ID</label>
+													<span id="task_detail_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>従業員ID</label>
+													<span id="employee_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>ポイント</label>
+													<span id="point_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>メンターID</label>
+													<span id="mentor_id_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>締切日</label>
+													<span id="due_date_pop"></span>
+		  									</div>
+		  									<div class="form-group">
+													<label>開始日</label>
+													<span id="start_date_pop"></span>
+		  									</div>
+		    								<button class="btn" id="popupSubmit">登録</button>
+									</div>
+	  						</div>
+					</div>
+  			</div>
+			<script>
+					$(function(){
+
+							$('#popup_btn').click(function() {
+								
+								$("#taskManagementNewForm").submit( function(e) {
+									
+									$("#task_management_id_pop").html($("#task_management_id").val());
+									$("#task_detail_id_pop").html($("#task_detail_id").val());
+								
+									var employee_id = $('#employee_id').val();
+									var employee_id_text = "";
+									$('#employee_id_Data option').each(function(){
+										let target =$(this).attr("value");
+										if( target == employee_id ) employee_id_text = $(this).text();
+									});
+									$("#employee_id_pop").html(employee_id_text);
+									
+									$("#point_pop").html($("#point").val());
+									
+									var mentor_id = $('#mentor_id').val();
+									var mentor_id_text = "";
+									$('#mentor_id_Data option').each(function(){
+										let target =$(this).attr("value");
+										if( target == mentor_id ) mentor_id_text = $(this).text();
+									});
+									$("#mentor_id_pop").html(mentor_id_text);
+									
+									$("#due_date_pop").html($("#due_date").val());
+									$("#start_date_pop").html($("#start_date").val());
+									
+							    	$.magnificPopup.open({
+							    		  items: {
+							    		    src: '#pass-popup'
+							    		  },
+							    		  type: 'inline'
+							    	});
+									return false;
+							});
+							
+							$('#popupSubmit').click(function() {
+								document.taskManagementNewForm.submit();
+							});
+
+							});
+					});
+			</script>
+ 	</body>
+ </html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head th:include="include/head">
+</head>
+<head>
+<title>タスク詳細情報</title>
+</head>
+<body>
+  <div th:include="include/header"></div>
+  <div class="container col-md-8 col-md-offset-2" th:object="${task}">
+  		<div class="panel panel-primary">
+	  			<div class="panel-heading">
+						<h2 class="panel-title">タスク詳細情報</h2>
+	  			</div>
+	  			<div class="panel-body">
+	  					<a class="btn btn-primary btn-sm pull-right" th:href="@{/task/{task_id}/edit(task_id=${task.task_id})}">編集</a>
+	  					<br><br>
+	  					<table class="table">
+	  							<tbody>
+										<tr>
+												<td style="width: 15%"><label>タスクID</label></td>
+												<td style="width: 35%" colspan="1" th:text="*{task_id}"></td>
+												<td style="width: 15%" ><label>タスク種別</label></td>
+										 		<td style="width: 35%" colspan="1"  th:text="*{taskDivision.task_division_name}"></td>
+										</tr>
+										<tr>
+												<td><label>タスク名</label></td>
+										 		<td colspan="1"  th:text="*{task_name}"></td>
+										 		<td><label>予算</label></td>
+										 		<td colspan="1"  th:text="*{budget}"></td>
+										</tr>
+										<tr>
+												<td><label>責任者</label></td>
+										 		<td colspan="1"  th:text="*{employee.employee_name}"></td>
+										 		<td><label>締切日</label></td>
+										 		<td colspan="1"  th:text="*{due_date}"></td>
+										</tr>
+										<tr>
+												<td><label>作成日</label></td>
+										 		<td colspan="1"  th:text="*{make_date}"></td>
+										 		<td><label>備考</label></td>
+										 		<td colspan="1"  th:text="*{detail}"></td>
+										</tr>
+								</tbody>
+						</table>
+	  			</div>
+		</div>
+		<div>
+				<div>
+						<h4>タスク内訳<a class="btn btn-primary pull-right" th:href="@{/taskDetail/{task_id}/new(task_id=${task.task_id})}">内訳の追加</a></h4><br>	
+				</div>
+				<div class="container col-md-4">
+  	  					<div class="container col-md-10 col-md-offset-1 bg-info">
+ 								<p><i class="fas fa-tasks" style="font-size: 20px;"></i>タスク内訳数<p>
+ 								<p class="text-right" th:text="${#lists.size(taskDetailList)}" style="font-size: 20px"></p>
+	  					</div>
+  				</div>
+ 				<div class="container col-md-4">
+  	  					<div class="container col-md-10 col-md-offset-1 bg-danger">
+ 								<p><i class="fas fa-calendar-times" style="font-size: 20px;"></i>完了タスク<p>
+ 								<p class="text-right" th:text="${#lists.size(taskDetailFinishedList)}" style="font-size: 20px"></p>
+	  					</div>
+ 				</div>
+ 				<div class="container col-md-4">
+  	  					<div class="container col-md-10 col-md-offset-1 bg-warning">
+ 								<p><i class="fas fa-calendar-check" style="font-size: 20px;"></i>未完了タスク<p>
+ 								<p class="text-right" th:text="${#lists.size(taskDetailNotFinishedList)}" style="font-size: 20px;"></p>
+	  					</div>
+ 				</div>
+		</div><br><br><br><br><br>
+ 			<div th:each="taskDetail:${taskDetailList}" class="panel panel-primary" th:object="${taskDetail}">
+	  			<div class="panel-heading">
+						<h2 class="panel-title">[[*{task_detail_name}]]<span class="pull-right">締切日：[[*{due_date}]]</span></h2>
+	  			</div>
+	  			<div class="panel-body">
+	  					<a style="margin: 10px;" th:value="*{task_detail_id}" class="btn btn-sm btn-success pull-right taskManagementNew"  th:href="@{/taskManagement/{task_detail_id}/new(task_detail_id=${taskDetail.task_detail_id})}">マネジメント追加</a>
+	  					<a style="margin-top: 10px;" class="btn btn-success btn-sm pull-right" th:href="@{/taskDetail/{task_detail_id}/edit_show(task_detail_id=${taskDetail.task_detail_id})}">編集</a>
+	  					<div th:text="${taskDetail.detail}">
+	  							
+	  					</div><br>
+	  					
+	  					<div th:each="taskManagement:${taskDetail.taskManagementList}">
+	  						<p>
+	  								[[${taskManagement.employee.employee_name}]]
+	  								<span class="" style="margin-left: 20px;">締切日：[[${taskManagement.due_date}]]</span>
+	  						</p>
+	  					</div>
+	  			</div>
+		</div>
+	 </div>
+</body>
+</html>

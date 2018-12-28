@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head th:include="include/head">
+</head>
+<head>
+<title>タスク内訳詳細情報</title>
+</head>
+<body>
+  <div th:include="include/header"></div>
+  <div class="container col-md-8 col-md-offset-2" th:object="${taskDetail}">
+  		<div class="panel panel-primary">
+	  			<div class="panel-heading">
+						<h2 class="panel-title">タスク内訳詳細情報</h2>
+	  			</div>
+	  			<div class="panel-body">
+	  					<a class="btn btn-primary btn-sm pull-right" th:href="@{/taskDetail/{task_detail_id}/edit(task_detail_id=${taskDetail.task_detail_id})}">編集</a>
+	  					<br><br>
+	  					<table class="table">
+	  							<tbody>
+										<tr>
+												<td style="width: 15%;"><label>タスクID</label></td>
+												<td style="width: 35%;" colspan="1" th:text="*{task_id}"></td>
+												<td style="width: 15%;"><label>タスク名</label></td>
+										 		<td style="width: 35%;" colspan="1"  th:text="*{task.task_name}"></td>
+										</tr>
+										<tr>
+												<td><label>タスク内訳ID</label></td>
+										 		<td colspan="1"  th:text="*{task_detail_id}"></td>
+										 		<td><label>タスク内訳名</label></td>
+										 		<td colspan="1"  th:text="*{task_detail_name}"></td>
+										</tr>
+										<tr>
+												<td><label>タスク内訳区分</label></td>
+										 		<td colspan="1"  th:text="*{taskDivision.task_division_name}"></td>
+										 		<td><label>締切日</label></td>
+										 		<td colspan="1"  th:text="*{due_date}"></td>
+										</tr>
+										<tr>
+												<td><label>責任者</label></td>
+										 		<td colspan="1"  th:text="*{task.employee.employee_name}"></td>
+										 		<td><label>備考</label></td>
+										 		<td colspan="1"  th:text="*{detail}"></td>
+										</tr>
+										<tr>
+												<td><label>状態</label></td>
+										 		<td th:if="*{end_flg}==true" colspan="1" >完了</td>
+										 		<td th:if="*{end_flg}==false" colspan="1" >未完了</td>
+												<td><label>作成日</label></td>
+										 		<td colspan="1"  th:text="*{#dates.format(make_date, 'yyyy年MM月dd日')}"></td>
+										</tr>
+										<tr>
+										 		<td><label>作成者ID</label></td>
+										 		<td colspan="1"  th:text="*{make_user}"></td>
+										 		<td><label>最終更新日</label></td>
+										 		<td colspan="1"  th:text="*{#dates.format(update_date, 'yyyy年MM月dd日')}"></td>
+										</tr>
+										<tr>
+										 		<td><label>最終更新者ID</label></td>
+										 		<td colspan="1"  th:text="*{update_user}"></td>
+										</tr>
+								</tbody>
+						</table>
+	  			</div>
+		</div>
+	 </div>
+</body>
+</html>

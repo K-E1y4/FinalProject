@@ -38,26 +38,28 @@ public class TaskDivisionService {
 
 	public void update(TaskDivision taskDivision) {
 		
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		UserAccount  makeUserAccount = (UserAccount) session.getAttribute("user");
-		String makeUserID  = makeUserAccount.getUsername();
-		
-		Optional<TaskDivision> taskDivision_check = findById(taskDivision.getTask_division_id());
-		if(taskDivision_check.isPresent()) {
-			TaskDivision motomoto_taskDivision = taskDivision_check.get();
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			UserAccount  makeUserAccount = (UserAccount) session.getAttribute("user");
+			String makeUserID  = makeUserAccount.getUsername();
+			
+			TaskDivision motomoto_taskDivision = findById(taskDivision.getTask_division_id());
 			taskDivision.setDetail(motomoto_taskDivision.getDetail());
 			taskDivision.setMake_date(motomoto_taskDivision.getMake_date());
 			taskDivision.setMake_user(motomoto_taskDivision.getMake_user());
 			taskDivision.setUpdate_date(timestamp);
 			taskDivision.setUpdate_user(makeUserID);
-		}
 		
-		repository.save(taskDivision);
+			repository.save(taskDivision);
 	}
 
-	private Optional<TaskDivision> findById(int task_division_id) {
+	public TaskDivision findById(int task_division_id) {
 		
-		return repository.findById(task_division_id);
+		Optional<TaskDivision> taskDivision_check = repository.findById(task_division_id);
+		TaskDivision taskDivision = null;
+		if(taskDivision_check.isPresent()) {
+			taskDivision = taskDivision_check.get();
+		}
+		return taskDivision;
 	}
 
 	public Object getNewId() {
@@ -94,6 +96,11 @@ public class TaskDivisionService {
 	public void delete(int task_division_id) {
 		// TODO 自動生成されたメソッド・スタブ
 		repository.deleteById(task_division_id);
+	}
+
+	public List<TaskDivision> findAll() {
+		
+		return repository.findAll();
 	}
 
 }

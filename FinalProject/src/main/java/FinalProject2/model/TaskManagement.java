@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name="tbl_task_management")
 public class TaskManagement implements Serializable {
@@ -34,15 +36,17 @@ public class TaskManagement implements Serializable {
 	private String mentor_id;
 	
 	@Column(name = "due_date")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull
 	private LocalDate due_date;
 	
 	@Column(name = "start_date")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull
 	private LocalDate start_date;
 	
 	@Column(name = "end_date")
-	@NotNull
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate end_date;
 	
 	@Column(name = "make_date")
